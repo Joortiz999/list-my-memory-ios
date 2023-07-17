@@ -18,14 +18,17 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct ListMyMemoryApp: App {
+    
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
     @StateObject var sessionService = SessionServiceProvider()
+    
     var body: some Scene {
         WindowGroup {
             NavigationView {
                 switch sessionService.state {
                 case .loggedIn:
-                    EventsView().environmentObject(sessionService)
+                    HomeView(active: .home).environmentObject(sessionService)
                 case .loggedOut:
                     LoginView()
                 }

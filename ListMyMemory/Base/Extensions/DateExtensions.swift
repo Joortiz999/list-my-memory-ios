@@ -9,6 +9,13 @@ import Foundation
 
 extension Date {
     
+    func daytoString(format: String = "dd") -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.dateFormat = format
+        return formatter.string(from: self)
+    }
+    
     func toString(format: String = "yyyy-MM-dd") -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -39,6 +46,11 @@ extension Date {
     
     func endOfMonth() -> Date {
         return Calendar.current.date(byAdding: DateComponents(month: 1, day: -1), to: self.startOfMonth())!
+    }
+
+    func nextDate(by: Int) -> Date {
+        let nextDate = Calendar.current.date(byAdding: .day, value: by, to: self)
+        return nextDate ?? Date()
     }
     
     func nextDate() -> Date {
@@ -104,11 +116,4 @@ extension Date {
 
             return "Just now"
         }
-}
-
-extension Int {
-    func of(_ name: String) -> String {
-        guard self != 1 else { return "\(self) \(name)" }
-        return "\(self) \(name)s"
-    }
 }

@@ -11,7 +11,7 @@ struct Event: Identifiable {
     var id: String
     var eventType: String
     var eventTitle: String
-    var eventDate: Date
+    var eventDate: String
     var eventPlace: String
     var eventDescription: String
     var eventRating: Double
@@ -21,7 +21,7 @@ struct Event: Identifiable {
 
 extension Event {
     static var new: Event {
-        Event(id: UUID().uuidString, eventType: "", eventTitle: "", eventDate: Date(), eventPlace: "", eventDescription: "", eventRating: 0.0, recurrence: false)
+        Event(id: UUID().uuidString, eventType: "event-type", eventTitle: "event-title", eventDate: Date().toString(), eventPlace: "event-place", eventDescription: "event-description", eventRating: 0.0, recurrence: false)
     }
     
 }

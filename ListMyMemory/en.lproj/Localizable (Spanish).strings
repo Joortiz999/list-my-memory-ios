@@ -1,0 +1,62 @@
+/* 
+  Localizable (Spanish).strings
+  ListMyMemory
+
+  Created by JORGE ANDRES ORTIZ RODRIGUEZ on 14/7/23.
+  
+*/
+
+// URL's
+label.webpage = "Web";
+
+// Connection
+error.connection.title = "Error de Conexión";
+error.connection.message = "Hubo un problema de conexión, Intente nuevamente más tarde...";
+
+// Device
+feature.not.available.title = "Alerta";
+feature.not.available.message = "Este dispositivo no soporta esta funcionalidad.";
+
+// Common
+label.loading = "Cargando";
+label.notFound = "No Encontrado";
+label.ok = "OK";
+label.information = "Información";
+label.more = "Mas";
+label.all = "Todos";
+label.about = "Acerca de";
+label.contitions = "Condiciones";
+label.version = "Versión";
+
+// Buttons
+button.continue = "Continuar";
+button.cancel = "Cancelar";
+button.accept = "Aceptar";
+button.decline = "Declinar";
+button.close = "Cerrar";
+button.select = "Seleccionar";
+button.open = "Abrir";
+button.retry = "Reintentar";
+button.tryAgain = "Inténtarlo nuevamente";
+button.login = "Iniciar Sessión";
+button.logout = "Cerrar Sessión";
+button.back = "Atras";
+button.saveChanges = "Guardar cambios";
+button.options = "Opciones";
+button.more.options = "Más opciones";
+
+// Splash
+label.splash.appTitle = "";
+
+// Registration
+
+// Login
+
+// Alerts
+
+// Events
+
+// Lists
+
+//Profile
+

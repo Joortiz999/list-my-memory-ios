@@ -8,38 +8,37 @@
 import SwiftUI
 
 struct ListsView: View {
-    @ObservedObject var taskStore = TaskDataStore()
+    @ObservedObject var taskStore = TaskDataStore.shared
     @State var newTask : String = ""
+    @State var index: Int?
     
     
     var body: some View {
-        
             NavigationView {
-                
                 VStack {
-                    
                     addTaskBar.padding()
                     List {
-                        
-                        ForEach(self.taskStore.tasks) { task in
+                        ForEach(self.taskStore.exampleTasks) { task in
+                            ListRowView(task: task, roundedTop: false, roundedBottom: false, handler: {
+                                
+                            })
                             
-                            Text(task.taskItem)
                         }.onDelete(perform: self.deleteTask)
-                        
-                    }.navigationBarTitle("Tasks").navigationBarItems(trailing: EditButton())
+                    }.listStyle(.plain)
                     
+                    .navigationBarBackButtonHidden()
+                    .navigationBarItems(trailing: EditButton())
                 }
             }
         }
     
     var addTaskBar : some View {
-            
             HStack {
                 
-                TextField("Add Task: ", text: self.$newTask)
+                TextField("Add Task: ", text: self.$newTask).font(.title3)
                 
-                Button(action: self.addNewTask, label: {
-                    Text("Add New")
+                SecondaryButtonView(title: "fitImage", image: ImageConstants.Add, imageColor: AppColors.White,background: AppColors.Green,height: 50, width: 50, handler: {
+                    self.addNewTask()
                 })
             }
         }

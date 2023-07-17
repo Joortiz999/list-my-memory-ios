@@ -8,40 +8,22 @@
 import SwiftUI
 
 struct EventDetailView: View {
-//    @Environment(\.presentationMode) var presentationModes
+    @EnvironmentObject var sessionService: SessionServiceProvider
+    
     var body: some View {
-        List {
-            Section("Evento:") {
-                LabeledContent {
-                    Text("Event here")
-                } label: {
-                    Text("Evento")
-                }
+        BaseView(title: Events.TodaysEvents, backButton: true, backButtonAction: {
+            ScreenNavigation().redirectToScreen(nextView: HomeView(active: .event).environmentObject(sessionService))
+        }, crossButton: false, crossButtonAction: {}, mainScreen: false, containsCapsule: false, content: {
+            VStack(spacing: 20) {
+                CustomImageViewResizable(inputImage: ImageConstants.Info)
+                CustomLabel(text: Common.Information, font: AppFonts.NeoSansSemiBold16, foregroundColor: AppColors.Black)
                 
-                LabeledContent {
-                    Text("place here")
-                } label: {
-                    Text("Place")
-                }
                 
-                LabeledContent {
-                    Text("Date here")
-                } label: {
-                    Text("Dia de evento")
-                }
             }
-            Section("Descripcion:") {
-                Text("descripcion de evento (opcional).")
-            }
-        }
-        .navigationTitle("Detalle de Evento")
+        })
+        .padding(.horizontal, 16)
+        .navigationBarHidden(true)
     }
 }
 
-struct EventDetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        NavigationStack {
-            EventDetailView()
-        }
-    }
-}
+

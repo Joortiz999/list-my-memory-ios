@@ -11,15 +11,15 @@ struct PrimaryButtonView: View {
     
     typealias ActionHandler = () -> Void
     
-    let title: String
+    let title: LocalizedStringKey
     let background: Color
     let foreground: Color
     let border: Color
     let handler: ActionHandler
     
-    private let cornerRadius: CGFloat = 10
+    private let cornerRadius: CGFloat = 30
     
-    internal init(title: String, background: Color = .blue, foreground: Color = .white, border: Color = .clear, handler: @escaping PrimaryButtonView.ActionHandler) {
+    internal init(title: LocalizedStringKey, background: Color = .blue, foreground: Color = .white, border: Color = .clear, handler: @escaping PrimaryButtonView.ActionHandler) {
         self.title = title
         self.background = background
         self.foreground = foreground
@@ -43,14 +43,19 @@ struct PrimaryButtonView: View {
     }
 }
 
-struct PrimaryButtonView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            PrimaryButtonView(title: "Primary Button") { }
-                .preview(with: "Primary Button View")
-            
-            PrimaryButtonView(title: "Secondary Button View", background: .clear, foreground: .blue, border: .blue) { }
-                .preview(with: "Secondary Button View")
-        }
+struct PrimaryButtonModifier: ViewModifier {
+    @Binding var isDataValid: Bool
+    func body(content: Content) -> some View {
+        content
+            .font(AppFonts.InterSemiBold16)
+            .foregroundColor(AppColors.White)
+            .frame(height: 56)
+            .frame(maxWidth: .infinity)
+            .background(buttonColor)
+            .cornerRadius(30)
+    }
+    
+    var buttonColor: Color {
+        return isDataValid ? Color.darkTurquoise : Color.silver
     }
 }

@@ -17,7 +17,7 @@ struct ForgotPasswordView: View {
         NavigationView {
             
             VStack(spacing: 16) {
-                InputTextFieldView(text: $vm.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
+//                InputTextFieldView(text: $vm.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
                 
                 PrimaryButtonView(title: "Send Password Reset") {
                     vm.sendPasswordReset()
@@ -34,6 +34,6 @@ struct ForgotPasswordView: View {
 
 struct ForgotPasswordView_Previews: PreviewProvider {
     static var previews: some View {
-        ForgotPasswordView()
+        ForgotPasswordView().preview(with: "Fogot Password")
     }
 }
