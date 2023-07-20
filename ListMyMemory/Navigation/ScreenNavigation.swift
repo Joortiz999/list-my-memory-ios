@@ -11,6 +11,7 @@ struct ScreenNames{
     //MARK: - General Screens
     static let SplashScreen = "SplashScreen"
     static let SettingsScreem = "SettingsScreen"
+    static let homeScreen = "HomeScreen"
     
     //MARK: - Pre-Login Screens
     static let LoginScreen = "LoginScreen"
@@ -31,28 +32,33 @@ struct ScreenNames{
 struct ScreenNavigation<Content> where Content : View{
     var screenName : String? = ""
     func redirectToScreen(nextView: Content) {
-        if screenName == ScreenNames.SplashScreen || screenName == ScreenNames.SettingsScreem || screenName == ScreenNames.LoginScreen || screenName == ScreenNames.RegistrationScreen || screenName == ScreenNames.SplashScreen || screenName == ScreenNames.ForgotPasswordScreen || screenName == ScreenNames.EventsScreen || screenName == ScreenNames.CreateEventScreen || screenName == ScreenNames.EventDetailScreen || screenName == ScreenNames.ListScreen || screenName == ScreenNames.AddListScreen{
-            DispatchQueue.main.async {
-                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                    let window = windowScene.windows.first
-                    window?.rootViewController = HostingController(rootView: nextView)
-                    window?.makeKeyAndVisible()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+            
+            if screenName == ScreenNames.SplashScreen || screenName == ScreenNames.SettingsScreem || screenName == ScreenNames.LoginScreen || screenName == ScreenNames.RegistrationScreen || screenName == ScreenNames.SplashScreen || screenName == ScreenNames.ForgotPasswordScreen || screenName == ScreenNames.EventsScreen || screenName == ScreenNames.CreateEventScreen || screenName == ScreenNames.EventDetailScreen || screenName == ScreenNames.ListScreen || screenName == ScreenNames.AddListScreen{
+                DispatchQueue.main.async {
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        let window = windowScene.windows.first
+                        window?.rootViewController = HostingController(rootView: nextView)
+                        window?.makeKeyAndVisible()
+                    }
+                }
+            }else{
+                DispatchQueue.main.async {
+                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        let window = windowScene.windows.first
+                        window?.rootViewController = UIHostingController(rootView: nextView)
+                        window?.makeKeyAndVisible()
+                    }
                 }
             }
-        }else{
-            DispatchQueue.main.async {
-                if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                    let window = windowScene.windows.first
-                    window?.rootViewController = UIHostingController(rootView: nextView)
-                    window?.makeKeyAndVisible()
-                }
-            }
-        }
+        })
     }
+    
 }
 
 class HostingController<ContentView>: UIHostingController<ContentView> where ContentView : View {
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
+        return .darkContent
     }
 }

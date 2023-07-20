@@ -43,14 +43,14 @@ struct RegisterView: View {
     private var content: some View {
         VStack(spacing: 40){
             VStack{
-                InputTextFieldView(text: $vm.userDetails.email, placeholder: Login.Email, keyboardType: .emailAddress, sfSymbol: nil).autocorrectionDisabled(true)
+                InputTextFieldView(text: $vm.userDetails.email, placeholder: Login.Email, keyboardType: .emailAddress, borderColor: AppColors.White, borderWidth: 3, cornerRadius: 10, sfSymbol: nil).autocorrectionDisabled(true)
                 InputPasswordView(password: $vm.userDetails.password, placeholder: Login.Password, sfSymbol: nil, isSecure: $isSecure)
             }
             Divider().background(AppColors.White)
             VStack {
-                InputTextFieldView(text: $vm.userDetails.firstName, placeholder: Registration.FirstName, keyboardType: .namePhonePad, sfSymbol: nil)
-                InputTextFieldView(text: $vm.userDetails.lastName, placeholder: Registration.LastName, keyboardType: .namePhonePad, sfSymbol: nil)
-                InputTextFieldView(text: $vm.userDetails.occupation, placeholder: Registration.Occupation, keyboardType: .default, sfSymbol: nil)
+                InputTextFieldView(text: $vm.userDetails.firstName, placeholder: Registration.FirstName, keyboardType: .namePhonePad, borderColor: AppColors.White, borderWidth: 3, cornerRadius: 10, sfSymbol: nil)
+                InputTextFieldView(text: $vm.userDetails.lastName, placeholder: Registration.LastName, keyboardType: .namePhonePad, borderColor: AppColors.White, borderWidth: 3, cornerRadius: 10, sfSymbol: nil)
+                InputTextFieldView(text: $vm.userDetails.occupation, placeholder: Registration.Occupation, keyboardType: .default, borderColor: AppColors.White, borderWidth: 3, cornerRadius: 10, sfSymbol: nil)
             }
         }
     }

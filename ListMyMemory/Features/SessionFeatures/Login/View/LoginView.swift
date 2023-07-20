@@ -45,7 +45,7 @@ struct LoginView: View {
             HStack {
                 CustomImageViewResizable(inputImage: ImageConstants.Ampersand, color: AppColors.White)
                     .frame(width: 55,height: 55)
-                InputTextFieldView(text: $vm.credentials.email, placeholder: Login.Email, keyboardType: .emailAddress, sfSymbol: nil)
+                InputTextFieldView(text: $vm.credentials.email, placeholder: Login.Email, keyboardType: .emailAddress, borderColor: AppColors.White, borderWidth: 3, cornerRadius: 10, sfSymbol: nil)
                     .font(AppFonts.NeoSansBold16)
             }
             HStack {
@@ -85,9 +85,6 @@ struct LoginView: View {
                 if !vm.credentials.email.isEmpty && !vm.credentials.password.isEmpty {
                     PrimaryButtonView(title: "Login", background: AppColors.White, foreground: AppColors.Blue) {
                         vm.login()
-                    }.font(AppFonts.NeoSansBold16)
-                }else {
-                    PrimaryButtonView(title: "Login", background: AppColors.White, foreground: AppColors.Blue) {
                     }.font(AppFonts.NeoSansBold16)
                 }
                 

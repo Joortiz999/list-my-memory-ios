@@ -117,3 +117,11 @@ extension Date {
             return "Just now"
         }
 }
+
+extension DateFormatter {
+    static let listDateFormatter: DateFormatter = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter
+    }()
+}

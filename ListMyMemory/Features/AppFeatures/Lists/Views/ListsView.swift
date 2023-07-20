@@ -8,62 +8,56 @@
 import SwiftUI
 
 struct ListsView: View {
-    @ObservedObject var taskStore = TaskDataStore.shared
+    @EnvironmentObject var sessionService: SessionServiceProvider
+    @StateObject private var taskVM = ListViewModelProvider(service: ListServiceProvider())
     @State var newTask : String = ""
-    @State var index: Int?
-    
     
     var body: some View {
             NavigationView {
                 VStack {
                     addTaskBar.padding()
-                    List {
-                        ForEach(self.taskStore.exampleTasks) { task in
-                            ListRowView(task: task, roundedTop: false, roundedBottom: false, handler: {
-                                
-                            })
-                            
-                        }.onDelete(perform: self.deleteTask)
-                    }.listStyle(.plain)
-                    
-                    .navigationBarBackButtonHidden()
-                    .navigationBarItems(trailing: EditButton())
+                    if !taskVM.baseLists.isEmpty {
+                        List {
+                            ForEach(taskVM.baseLists, id: \.self) { task in
+                                ListRowView(task: task, handler: {
+                                    ScreenNavigation().redirectToScreen(nextView: TaskView(task: task).environmentObject(sessionService))
+                                })
+                            }.onDelete(perform: self.deleteTask)
+                        }.listStyle(.plain)
+                            .navigationBarBackButtonHidden()
+                            .navigationBarItems(trailing: EditButton())
+                    } else {
+                        CustomLabelString(text: "Tasks are empty.", font: .title.bold(), foregroundColor: AppColors.Green).scenePadding(.all).padding(.top, 100)
+                        CustomLabelString(text: "Add new tasks by typing\na task title, and\npressing add button.", font: .body.bold(), foregroundColor: AppColors.Green).scenePadding(.all)
+                    }
+                }.onAppear{
+                    taskVM.getAllLists()
                 }
             }
         }
     
     var addTaskBar : some View {
             HStack {
-                
                 TextField("Add Task: ", text: self.$newTask).font(.title3)
-                
                 SecondaryButtonView(title: "fitImage", image: ImageConstants.Add, imageColor: AppColors.White,background: AppColors.Green,height: 50, width: 50, handler: {
-                    self.addNewTask()
+                    if !newTask.isEmpty {
+                        self.addNewTask()
+                    }
                 })
             }
         }
     
     func addNewTask() {
-        
-        taskStore.tasks.append(Task(
-            
-            id: String(taskStore.tasks.count + 1),
-            taskItem: newTask
-        ))
-        
+        taskVM.createList(with: newTask)
         self.newTask = ""
     }
 
     func deleteTask(at offsets: IndexSet) {
-        taskStore.tasks.remove(atOffsets: offsets)
-    }
-}
-
-
-
-struct ListsView_Previews: PreviewProvider {
-    static var previews: some View {
-        ListsView()
+        let listsToDelete = offsets.map { taskVM.baseLists[$0] }
+        taskVM.baseLists.remove(atOffsets: offsets)
+        for list in listsToDelete {
+                taskVM.deleteList(list: list)
+            }
     }
 }
 

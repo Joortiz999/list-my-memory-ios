@@ -17,7 +17,9 @@ struct ForgotPasswordView: View {
         NavigationView {
             
             VStack(spacing: 16) {
-//                InputTextFieldView(text: $vm.email, placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
+                InputTextFieldView(text: $vm.email, placeholder: "Email", keyboardType: .emailAddress, borderColor: AppColors.White, borderWidth: 3, cornerRadius: 10, sfSymbol: "envelope")
+                    .foregroundColor(AppColors.Black)
+                    .background(AppColors.White)
                 
                 PrimaryButtonView(title: "Send Password Reset") {
                     vm.sendPasswordReset()

@@ -17,6 +17,8 @@ public enum ActiveNavigation: Int {
 
 struct HomeView: View {
     @EnvironmentObject var sessionService: SessionServiceProvider
+    @StateObject private var eventVM = EventViewModelProvider(service: EventServiceProvider())
+    @StateObject private var taskVM = ListViewModelProvider(service: ListServiceProvider())
     @State var isShowingNewEvent: Bool = false
     
     @State var active: ActiveNavigation = .task
@@ -45,7 +47,7 @@ struct HomeView: View {
                         Image(systemName: "list.bullet.clipboard.fill")
                         Text("Tasks")
                     }.tag(ActiveNavigation.task)
-                Text("Settings Commig soon..")
+                settingsView
                     .font(.system(size: 30, weight: .bold, design: .rounded))
                     .tabItem {
                         VStack{
@@ -56,70 +58,150 @@ struct HomeView: View {
             }.tabViewStyle(.automatic)
                 .accentColor(active == .home ? AppColors.Red : active == .event ? AppColors.Blue : active == .task ? AppColors.Green : active == .settings ? AppColors.Purple : AppColors.Black)
                 .navigationBarBackButtonHidden()
-            Text("\(active.rawValue)")
         }
     }
     
     private var homeView: some View {
         VStack{
             HStack{
-                CustomLabel(text: Common.Hello, font: AppFonts.InterBold16, foregroundColor: AppColors.Black)
+                    CustomLabel(text: Common.Hello, font: AppFonts.InterBold16, foregroundColor: AppColors.Black)
                 CustomLabelString(text: self.sessionService.userDetails?.firstName ?? "User", font: AppFonts.InterBold16, foregroundColor: AppColors.Black)
                 
-            }
+            }.padding(.vertical, 10).frame(width: 320, alignment: .leading)
             HStack(spacing: 16){
-                SecondaryButtonView(title: Events.NewEvents,image: ImageConstants.Add, imageColor: AppColors.White, height: 100, width: 170, handler: {
-                    self.active = .home
-                    ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents){
-                        
-                    }.environmentObject(sessionService))
+                SecondaryButtonView(title: Events.NewEvents,image: ImageConstants.Add, imageColor: AppColors.Black, background: AppColors.Blue.opacity(0.8), foreground: AppColors.Black, border: AppColors.Black, height: 100, width: 170, handler: {
+                    ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents).environmentObject(sessionService))
                 })
-                SecondaryButtonView(title: Events.EventSuggestions,image: ImageConstants.Eye, imageColor: AppColors.White, background: AppColors.Red, height: 100, width: 220, handler: {
-                    
+                SecondaryButtonView(title: Events.EventSuggestions,image: ImageConstants.Eye, imageColor: AppColors.Black, background: AppColors.Orange.opacity(0.8),foreground: AppColors.Black, border: AppColors.Black, height: 100, width: 220, handler: {
+                    print("Feature under Development")
                 })
                 
             }.padding(.horizontal, 16)
             VStack {
-                CustomLabel(text: Events.UpcommingEvents, font: AppFonts.NeoSansBold14, foregroundColor: AppColors.Purple).frame(alignment: .leading)
+                HStack{
+                    Group{
+                    CustomImageViewResizable(inputImage: ImageConstants.RightArrow, color: AppColors.Red).frame(width: 25, height: 25)
+                    VStack{
+                        Divider().frame(width: 30,height: 2)
+                            .overlay(AppColors.Red)
+                    }
+                    CustomImageViewResizable(inputImage: ImageConstants.RightArrow, color: AppColors.Red).frame(width: 25, height: 25)
+                    VStack{
+                        Divider().frame(width: 30,height: 2)
+                            .overlay(AppColors.Red)
+                    }
+                    CustomImageViewResizable(inputImage: ImageConstants.RightArrow, color: AppColors.Red).frame(width: 25, height: 25)
+                    }
+                    CustomLabel(text: Events.UpcommingEvents, font: .body.bold(), foregroundColor: AppColors.Red).lineLimit(1)
+                }.frame(width: 340, alignment: .trailing)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack{
-                        
                         ForEach(0...6, id: \.self) { index in
                             let day = startDay.nextDate(by: index)
-                            WeeklyDaysRowView(weekDayHumanReadable: day.getHumanReadableDayString(), weekDay: day.daytoString(), backgroundColor: AppColors.White, borderColor: AppColors.Purple) {
-                                print("filtering by day \(day.getHumanReadableDayString()), \(day.daytoString())")
+                            WeeklyDaysRowView(weekDayHumanReadable: day.getHumanReadableDayString(), weekDay: day.daytoString(), backgroundColor: eventVM.foundEventDate != day ? AppColors.Red.opacity(0.8) : AppColors.Red, borderColor: AppColors.White.opacity(0.8)) {
+                                eventVM.getEventsByDate(date: day)
+                                print("filtering by \(day.getHumanReadableDayString()), \(day.daytoString())")
                             }
                         }
                     }
                 }.padding(.horizontal, 16)
             }
+            .onAppear{
+                eventVM.getEventsByDate(date: Date.now)
+            }
+            VStack{
+                if !eventVM.events.isEmpty {
+                    CustomLabelString(text: eventVM.foundEventDate?.toString(format: "EEEE, MMM d, yyyy") ?? "", font: .title.bold(), foregroundColor: AppColors.Red)
+                    ForEach(eventVM.events, id: \.self) { fE in
+                        
+                        Button(action: {
+                            ScreenNavigation().redirectToScreen(nextView: EventDetailView(event: fE, fromScreen: ScreenNames.homeScreen).environmentObject(sessionService))
+                        }, label: {
+                            HStack{
+                                VStack{
+                                    Text(fE.eventName)
+                                    Text(fE.eventTime)
+                                    Text(fE.eventPlace)
+                                    Text(fE.eventType.rawValue)
+                                }.padding(12).frame(width: 210, height: 100, alignment: .center)
+                                Spacer()
+                                Divider().frame(width: 3, height: 80)
+                                    .overlay(AppColors.White)
+                                CustomImageViewResizable(inputImage: ImageConstants.Calendar, color: AppColors.White)
+                                    .frame(width: 60, height: 60).padding(12)
+                            }
+                            .frame(maxWidth: 320, maxHeight: 120, alignment: .leading)
+                        })
+                        .background(AppColors.Red)
+                        .foregroundColor(AppColors.White)
+                        .font(.body.bold())
+                        .cornerRadius(20)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(AppColors.White.opacity(0.8), lineWidth: 3)
+                        )
+                    }
+                } else {
+                    VStack{
+                        CustomLabelString(text: "No events found on", font: .title3.bold(), foregroundColor: AppColors.Red)
+                        CustomLabelString(text: "\(eventVM.foundEventDate?.getHumanReadableDayString() ?? startDay.getHumanReadableDayString()), \(eventVM.foundEventDate?.daytoString() ?? startDay.daytoString())", font: .title.bold(), foregroundColor: AppColors.Red)
+                    }.padding(.top, 100).scenePadding(.all)
+                }
+            }
             Spacer()
-            Text("DashBoard")
         }
     }
     private var eventsView: some View {
         VStack{
             VStack{
                 HStack(spacing: 4){
-                    SecondaryButtonView(title: Events.TodaysEvents,image: ImageConstants.Flag, imageColor: AppColors.White, height: 55, width: 180, handler: {
-                        
+                    SecondaryButtonView(title: eventVM.appliedFilter == .active ? Events.TodaysEvents : Events.ActiveEvents ,image: ImageConstants.Flag, imageColor: AppColors.White, background: AppColors.Blue.opacity(0.7), height: 55, width: 230, handler: {
+                        if eventVM.appliedFilter != .todays  {
+                            eventVM.appliedFilter = .todays
+                            eventVM.getEventsByDate(date: Date())
+                        } else {
+                            eventVM.appliedFilter = .active
+                            eventVM.getActiveEvents()
+                        }
                     })
-                    SecondaryButtonView(title: Events.UpcommingEvents,image: ImageConstants.History, imageColor: AppColors.White, background: AppColors.Red, height: 55, width: 180, handler: {
-                        
+                    Spacer()
+                    SecondaryButtonView(title: "fitImage",image: ImageConstants.History, imageColor: AppColors.White, background: AppColors.Blue.opacity(0.7), height: 55, width: 120, handler: {
+                        if eventVM.appliedFilter != .all && eventVM.appliedFilter != .done {
+                            eventVM.appliedFilter = .all
+                            eventVM.getEvents()
+                        } else if eventVM.appliedFilter == .all {
+                            eventVM.appliedFilter = .done
+                            eventVM.getPreviousEvents()
+                        } else {
+                            eventVM.appliedFilter = .active
+                            eventVM.getActiveEvents()
+                        }
                     })
                     
                 }
                 Spacer()
                 ScrollView {
-                    ForEach(0...3, id: \.self) {_ in
-                        EventRowView(eventName: Event.new.eventTitle, eventDescription: Event.new.eventDescription, eventPlace: Event.new.eventPlace, backgroundColor: AppColors.Blue, borderColor: AppColors.White) {
-                            self.active = .event
-                            ScreenNavigation().redirectToScreen(nextView: EventDetailView().environmentObject(sessionService))
+                    if !eventVM.events.isEmpty {
+                        CustomLabelString(text: eventVM.appliedFilter.rawValue, font: .title2.bold(), foregroundColor: AppColors.Blue).padding(.top, 25).frame(width: 320, alignment: .leading)
+                        ForEach(eventVM.events, id: \.id) { event in
+                            EventRowView(eventName: event.eventName , eventDescription: event.eventDescription , eventPlace: event.eventPlace , backgroundColor: AppColors.Blue, borderColor: AppColors.White) {
+                                    self.active = .event
+                                ScreenNavigation().redirectToScreen(nextView: EventDetailView(event: event, fromScreen: ScreenNames.EventsScreen).environmentObject(sessionService))
+                                }
+                        }
+                        
+                    } else {
+                        CustomLabelString(text: "\(eventVM.appliedFilter.rawValue)\nare empty.", font: .title.bold(), foregroundColor: AppColors.Blue).scenePadding(.all).padding(.top, 100)
+                        CustomLabelString(text: "Add new events by\ntaping here, and filling\nthe desire event form.", font: .body.bold(), foregroundColor: AppColors.Blue).scenePadding(.all).onTapGesture {
+                            ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents).environmentObject(sessionService))
                         }
                     }
                 }.padding(.horizontal, 7)
             }
         }.padding(.horizontal, 16)
+            .onAppear{
+                eventVM.getActiveEvents()
+            }
     }
     private var tasksView: some View {
         VStack{
@@ -140,7 +222,9 @@ struct HomeView: View {
     }
     private var settingsView: some View {
         VStack{
-            
+            SecondaryButtonView(title: "fitImage", image: ImageConstants.LogOut, imageColor: AppColors.Purple, background: AppColors.White, foreground: AppColors.Purple, border: AppColors.Purple,height: 80, width: 80, handler: {
+                sessionService.logout()
+            })
         }
     }
 }

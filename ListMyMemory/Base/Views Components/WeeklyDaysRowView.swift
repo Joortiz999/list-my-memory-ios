@@ -33,7 +33,7 @@ struct WeeklyDaysRowView: View {
                 Text(weekDay).font(.system(size: 26, design: .rounded).bold())
                 Text(weekDayHumanReadable).font(.system(size: 20, design: .rounded).bold())
             }
-            .foregroundColor(border)
+            .foregroundColor(AppColors.White)
             .padding(10)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(background)

@@ -11,6 +11,9 @@ struct InputTextFieldView: View {
     @Binding var text: String
     let placeholder: LocalizedStringKey
     let keyboardType: UIKeyboardType
+    let borderColor: Color
+    let borderWidth: CGFloat
+    let cornerRadius: CGFloat
     let sfSymbol: String?
     
     private let textFieldLeading: CGFloat = 30
@@ -29,23 +32,41 @@ struct InputTextFieldView: View {
                             Image(systemName: systemImage)
                                 .font(.system(size: 16, weight: .semibold))
                                 .padding(.leading, 5)
-                                .foregroundColor(!text.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6))
+                                .foregroundColor(!text.isEmpty ? borderColor : borderColor.opacity(0.9))
                         }
-                        RoundedRectangle(cornerRadius: 10, style: .continuous)
-                            .stroke(!text.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6), lineWidth: 3)
+                        RoundedRectangle(cornerRadius: cornerRadius, style: .circular)
+                            .stroke(!text.isEmpty ? borderColor : borderColor.opacity(0.8), lineWidth: borderWidth)
                     })
-                )
+                ).cornerRadius(cornerRadius)
     }
 }
 
-struct InputTextFieldView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            InputTextFieldView(text: .constant("email.mail@mail.com"), placeholder: "Email", keyboardType: .emailAddress, sfSymbol: "envelope")
-                .preview(with: "Text Input Edit with sfsymbol")
+
+struct LargeInputTextFieldView: View {
+    @Binding var text: String
+    let placeholder: LocalizedStringKey
+    let keyboardType: UIKeyboardType
+    let borderColor: Color
+    let borderWidth: CGFloat
+    let cornerRadius: CGFloat
+    
+    private let textFieldLeading: CGFloat = 30
+    
+    var body: some View {
+        
+        TextField(self.placeholder, text: $text)
+            .foregroundColor(AppColors.White)
+            .font(AppFonts.NeoSansBold16)
+            .frame(maxWidth: 320, minHeight: 75, alignment: .topLeading)
             
-            InputTextFieldView(text: .constant(""),placeholder: "First Name", keyboardType: .default, sfSymbol: nil)
-                .preview(with: "Text Input without sfsymbol")
-        }
+            .padding([.leading], textFieldLeading / 2)
+            .padding([.top], textFieldLeading / 2)
+            .keyboardType(keyboardType)
+            .background(
+                ZStack(alignment: .leading, content: {
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .circular)
+                        .stroke(!text.isEmpty ? borderColor : borderColor.opacity(0.8), lineWidth: borderWidth)
+                })
+            ).cornerRadius(cornerRadius)
     }
 }

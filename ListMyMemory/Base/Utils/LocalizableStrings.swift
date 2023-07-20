@@ -11,6 +11,7 @@ import SwiftUI
 typealias Common = LocalizedTags.Common
 typealias Alerts = LocalizedTags.Alerts
 typealias Registration = LocalizedTags.Registration
+typealias Buttons = LocalizedTags.Buttons
 typealias Login = LocalizedTags.Login
 typealias Splash = LocalizedTags.Splash
 typealias Events = LocalizedTags.Events
@@ -84,6 +85,7 @@ struct LocalizedTags{
         static let UpcommingEvents: LocalizedStringKey = "label.events.upcomming.events"
         static let EventSuggestions: LocalizedStringKey = "label.event.suggestions"
         static let TodaysEvents: LocalizedStringKey = "label.event.todays"
+        static let ActiveEvents: LocalizedStringKey = "label.event.active"
         static let EventLocation: LocalizedStringKey = "label.event.location"
         static let WeeklyEvents: LocalizedStringKey = "label.event.weekly"
     }

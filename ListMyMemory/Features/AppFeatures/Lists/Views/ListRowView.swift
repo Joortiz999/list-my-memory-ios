@@ -8,25 +8,21 @@
 import SwiftUI
 
 struct ListRowView: View {
-    
+    @StateObject private var taskVM = ListViewModelProvider(service: ListServiceProvider())
     typealias ActionHandler = () -> Void
     
-    @State var task: Task
-    var roundedTop: Bool
-    var roundedBottom: Bool
+    var task: BaseList
     var handler : ActionHandler
     
-    init(task: Task, roundedTop: Bool, roundedBottom: Bool, handler: @escaping ListRowView.ActionHandler) {
+    init(task: BaseList, handler: @escaping ListRowView.ActionHandler) {
         self.task = task
-        self.roundedTop = roundedTop
-        self.roundedBottom = roundedBottom
         self.handler = handler
     }
     
     var body: some View {
         ZStack(alignment: .leading){
             RoundedRectangle(cornerRadius: 10.0, style: .continuous)
-                .fill(AppColors.Green)
+                .fill(AppColors.Green.opacity(0.7))
                 .frame( height: 100)
             Button(action: handler, label: {
                 VStack(alignment: .leading){
@@ -37,7 +33,7 @@ struct ListRowView: View {
                             .frame(width: 2, height: 60)
                             .overlay(AppColors.White)
                         VStack {
-                            Text("\(task.taskItem)")
+                            Text("\(task.name)")
                                 .foregroundColor(AppColors.White)
                                 .font(.title.bold())
                         }
