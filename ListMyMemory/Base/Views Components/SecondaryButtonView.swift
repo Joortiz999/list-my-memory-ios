@@ -52,7 +52,7 @@ struct SecondaryButtonView: View {
         })
         .background(background)
         .foregroundColor(foreground)
-        .font(.body.bold())
+        .font(.callout.bold())
         .cornerRadius(cornerRadius)
         .overlay(
             RoundedRectangle(cornerRadius: cornerRadius)

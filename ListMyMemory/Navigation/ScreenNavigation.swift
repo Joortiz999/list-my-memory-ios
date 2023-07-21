@@ -22,6 +22,7 @@ struct ScreenNames{
     static let EventsScreen = "EventsScreen"
     static let CreateEventScreen = "CreateEventScreen"
     static let EventDetailScreen = "EventDetailScreen"
+    static let EventSuggestionScreen = "EventSuggestionScreen"
     
     //MARK: - List Screens
     static let ListScreen = "ListScreen"
@@ -33,7 +34,7 @@ struct ScreenNavigation<Content> where Content : View{
     var screenName : String? = ""
     func redirectToScreen(nextView: Content) {
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
             
             if screenName == ScreenNames.SplashScreen || screenName == ScreenNames.SettingsScreem || screenName == ScreenNames.LoginScreen || screenName == ScreenNames.RegistrationScreen || screenName == ScreenNames.SplashScreen || screenName == ScreenNames.ForgotPasswordScreen || screenName == ScreenNames.EventsScreen || screenName == ScreenNames.CreateEventScreen || screenName == ScreenNames.EventDetailScreen || screenName == ScreenNames.ListScreen || screenName == ScreenNames.AddListScreen{
                 DispatchQueue.main.async {

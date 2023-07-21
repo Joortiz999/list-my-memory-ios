@@ -20,6 +20,7 @@ struct HomeView: View {
     @StateObject private var eventVM = EventViewModelProvider(service: EventServiceProvider())
     @StateObject private var taskVM = ListViewModelProvider(service: ListServiceProvider())
     @State var isShowingNewEvent: Bool = false
+    @State var showEventSuggestion: Bool = false
     
     @State var active: ActiveNavigation = .task
     let startDay = Date()
@@ -69,12 +70,17 @@ struct HomeView: View {
                 
             }.padding(.vertical, 10).frame(width: 320, alignment: .leading)
             HStack(spacing: 16){
-                SecondaryButtonView(title: Events.NewEvents,image: ImageConstants.Add, imageColor: AppColors.Black, background: AppColors.Blue.opacity(0.8), foreground: AppColors.Black, border: AppColors.Black, height: 100, width: 170, handler: {
-                    ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents).environmentObject(sessionService))
+                SecondaryButtonView(title: Events.NewEvents,image: ImageConstants.Add, imageColor: AppColors.Black.opacity(0.7), background: AppColors.Blue.opacity(0.8), foreground: AppColors.Black, height: 100, width: 170, handler: {
+                    ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents, eventSuggested: Event.new).environmentObject(sessionService))
                 })
-                SecondaryButtonView(title: Events.EventSuggestions,image: ImageConstants.Eye, imageColor: AppColors.Black, background: AppColors.Orange.opacity(0.8),foreground: AppColors.Black, border: AppColors.Black, height: 100, width: 220, handler: {
+                SecondaryButtonView(title: Events.EventSuggestions,image: ImageConstants.Eye, imageColor: AppColors.Black.opacity(0.7), background: AppColors.Orange.opacity(0.7),foreground: AppColors.Black, height: 100, width: 220, handler: {
                     print("Feature under Development")
+                    // present sheet
+                    showEventSuggestion.toggle()
                 })
+                .sheet(isPresented: $showEventSuggestion) {
+                    EventSuggestionView()
+                }
                 
             }.padding(.horizontal, 16)
             VStack {
@@ -100,7 +106,7 @@ struct HomeView: View {
                             let day = startDay.nextDate(by: index)
                             WeeklyDaysRowView(weekDayHumanReadable: day.getHumanReadableDayString(), weekDay: day.daytoString(), backgroundColor: eventVM.foundEventDate != day ? AppColors.Red.opacity(0.8) : AppColors.Red, borderColor: AppColors.White.opacity(0.8)) {
                                 eventVM.getEventsByDate(date: day)
-                                print("filtering by \(day.getHumanReadableDayString()), \(day.daytoString())")
+//                                print("filtering by \(day.getHumanReadableDayString()), \(day.daytoString())")
                             }
                         }
                     }
@@ -112,40 +118,43 @@ struct HomeView: View {
             VStack{
                 if !eventVM.events.isEmpty {
                     CustomLabelString(text: eventVM.foundEventDate?.toString(format: "EEEE, MMM d, yyyy") ?? "", font: .title.bold(), foregroundColor: AppColors.Red)
-                    ForEach(eventVM.events, id: \.self) { fE in
-                        
-                        Button(action: {
-                            ScreenNavigation().redirectToScreen(nextView: EventDetailView(event: fE, fromScreen: ScreenNames.homeScreen).environmentObject(sessionService))
-                        }, label: {
-                            HStack{
-                                VStack{
-                                    Text(fE.eventName)
-                                    Text(fE.eventTime)
-                                    Text(fE.eventPlace)
-                                    Text(fE.eventType.rawValue)
-                                }.padding(12).frame(width: 210, height: 100, alignment: .center)
-                                Spacer()
-                                Divider().frame(width: 3, height: 80)
-                                    .overlay(AppColors.White)
-                                CustomImageViewResizable(inputImage: ImageConstants.Calendar, color: AppColors.White)
-                                    .frame(width: 60, height: 60).padding(12)
-                            }
-                            .frame(maxWidth: 320, maxHeight: 120, alignment: .leading)
-                        })
-                        .background(AppColors.Red)
-                        .foregroundColor(AppColors.White)
-                        .font(.body.bold())
-                        .cornerRadius(20)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 20)
-                                .stroke(AppColors.White.opacity(0.8), lineWidth: 3)
-                        )
+                    ScrollView(showsIndicators: false){
+                        ForEach(eventVM.events, id: \.self) { fE in
+                            
+                            Button(action: {
+                                ScreenNavigation().redirectToScreen(nextView: EventDetailView(event: fE, fromScreen: ScreenNames.homeScreen).environmentObject(sessionService))
+                            }, label: {
+                                HStack{
+                                    VStack{
+                                        Text(fE.eventName)
+                                        Text(fE.eventTime)
+                                        Text(fE.eventPlace)
+                                        Text(fE.eventType.rawValue)
+                                    }.padding(12).frame(width: 210, height: 100, alignment: .center)
+                                    Spacer()
+                                    Divider().frame(width: 3, height: 80)
+                                        .overlay(AppColors.White)
+                                    CustomImageViewResizable(inputImage: ImageConstants.Info, color: AppColors.White)
+                                        .frame(width: 60, height: 60).padding(12)
+                                }
+                                .frame(maxWidth: 320, maxHeight: 120, alignment: .leading)
+                            })
+                            .background(AppColors.Red)
+                            .foregroundColor(AppColors.White)
+                            .font(.body.bold())
+                            .cornerRadius(20)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(AppColors.White.opacity(0.8), lineWidth: 3)
+                            )
+                        }
                     }
                 } else {
-                    VStack{
-                        CustomLabelString(text: "No events found on", font: .title3.bold(), foregroundColor: AppColors.Red)
+                    VStack(spacing: 10){
+                        CustomImageViewResizable(inputImage: ImageConstants.Wrong, color: AppColors.Red.opacity(0.7)).frame(width: 80, height: 80)
+                        CustomLabelString(text: "No events found on", font: .title3.bold(), foregroundColor: AppColors.Red.opacity(0.7))
                         CustomLabelString(text: "\(eventVM.foundEventDate?.getHumanReadableDayString() ?? startDay.getHumanReadableDayString()), \(eventVM.foundEventDate?.daytoString() ?? startDay.daytoString())", font: .title.bold(), foregroundColor: AppColors.Red)
-                    }.padding(.top, 100).scenePadding(.all)
+                    }.padding(.top, 80).scenePadding(.all)
                 }
             }
             Spacer()
@@ -183,17 +192,19 @@ struct HomeView: View {
                 ScrollView {
                     if !eventVM.events.isEmpty {
                         CustomLabelString(text: eventVM.appliedFilter.rawValue, font: .title2.bold(), foregroundColor: AppColors.Blue).padding(.top, 25).frame(width: 320, alignment: .leading)
+                        
                         ForEach(eventVM.events, id: \.id) { event in
-                            EventRowView(eventName: event.eventName , eventDescription: event.eventDescription , eventPlace: event.eventPlace , backgroundColor: AppColors.Blue, borderColor: AppColors.White) {
+                            EventRowView(eventName: event.eventName , eventDescription: event.eventDescription , eventPlace: event.eventPlace , backgroundColor: AppColors.Blue.opacity(0.7), borderColor: AppColors.White) {
                                     self.active = .event
                                 ScreenNavigation().redirectToScreen(nextView: EventDetailView(event: event, fromScreen: ScreenNames.EventsScreen).environmentObject(sessionService))
                                 }
                         }
                         
                     } else {
-                        CustomLabelString(text: "\(eventVM.appliedFilter.rawValue)\nare empty.", font: .title.bold(), foregroundColor: AppColors.Blue).scenePadding(.all).padding(.top, 100)
+                        CustomImageViewResizable(inputImage: ImageConstants.Wrong, color: AppColors.Blue.opacity(0.7)).frame(width: 80, height: 80).padding(.top, 80)
+                        CustomLabelString(text: "\(eventVM.appliedFilter.rawValue)\nare empty.", font: .title.bold(), foregroundColor: AppColors.Blue).scenePadding(.all)
                         CustomLabelString(text: "Add new events by\ntaping here, and filling\nthe desire event form.", font: .body.bold(), foregroundColor: AppColors.Blue).scenePadding(.all).onTapGesture {
-                            ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents).environmentObject(sessionService))
+                            ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents, eventSuggested: Event.new).environmentObject(sessionService))
                         }
                     }
                 }.padding(.horizontal, 7)

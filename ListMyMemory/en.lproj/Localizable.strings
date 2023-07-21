@@ -43,7 +43,6 @@ button.retry = "Retry";
 button.tryAgain = "Try Again";
 button.login = "Log In";
 button.logout = "Log Out";
-
 button.saveChanges = "Save Changes";
 button.options = "Options";
 button.more.options = "More Options";
@@ -56,6 +55,7 @@ label.registration.title = "Sign Up";
 label.first.name = "First Name";
 label.last.name = "Last Name";
 label.occupation = "Occupation";
+
 // Login
 label.email = "E-mail";
 label.password = "Password";
@@ -68,12 +68,14 @@ label.forgot.password = "Forgot Password?";
 // Events
 label.events.new.events = "New Events";
 label.events.upcomming.events = "Upcomming Events";
-label.event.suggestions = "Event Suggeston";
+label.event.suggestions = "Event Suggestions";
 label.event.todays = "Today's events";
 label.event.active = "Active events";
 label.event.location = "Event Location";
 label.event.weekly = "Weekly Events";
+
 // Lists
 label.task.add.new = "Add new Events";
 label.task.weekly = "Weekly tasks";
+
 //Profile

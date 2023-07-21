@@ -24,7 +24,7 @@ struct LoginView: View {
                     
                     content
                     
-                    contentButtonView.ignoresSafeArea(.keyboard, edges: .bottom)
+                    contentButtonView.ignoresSafeArea(.keyboard, edges: [.bottom])
                 }
             })
         }.frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -45,13 +45,13 @@ struct LoginView: View {
             HStack {
                 CustomImageViewResizable(inputImage: ImageConstants.Ampersand, color: AppColors.White)
                     .frame(width: 55,height: 55)
-                InputTextFieldView(text: $vm.credentials.email, placeholder: Login.Email, keyboardType: .emailAddress, borderColor: AppColors.White, borderWidth: 3, cornerRadius: 10, sfSymbol: nil)
+                InputTextFieldView(text: $vm.credentials.email, placeholder: Login.Email, keyboardType: .emailAddress, borderColor: AppColors.White, borderWidth: 3, background: AppColors.White.opacity(0.4), cornerRadius: 10, sfSymbol: nil)
                     .font(AppFonts.NeoSansBold16)
             }
             HStack {
                 CustomImageViewResizable(inputImage: ImageConstants.Key, color: AppColors.White)
                     .frame(width: 55,height: 55)
-                InputPasswordView(password: $vm.credentials.password, placeholder: Login.Password, sfSymbol: nil, isSecure: $isSecure)
+                InputPasswordView(password: $vm.credentials.password, placeholder: Login.Password, background: AppColors.White.opacity(0.4), isSecure: $isSecure)
                     .font(AppFonts.NeoSansBold16)
             }
             HStack {
@@ -66,6 +66,8 @@ struct LoginView: View {
                 .font(AppFonts.NeoSansBold16)
                 .sheet(isPresented: $showForgotPassword) {
                     ForgotPasswordView()
+                        .presentationDetents([.medium, .large])
+//                        .presentationCompactAdaptation(.none)
                 }
             }
             
@@ -82,11 +84,10 @@ struct LoginView: View {
     
     var contentButtonView: some View {
             VStack(spacing: 16) {
-                if !vm.credentials.email.isEmpty && !vm.credentials.password.isEmpty {
-                    PrimaryButtonView(title: "Login", background: AppColors.White, foreground: AppColors.Blue) {
+                PrimaryButtonView(title: "Login", background: vm.credentials.email.isEmpty && vm.credentials.password.isEmpty ? AppColors.White.opacity(0.5) : AppColors.White, foreground: AppColors.Blue) {
+                        //Add Loading
                         vm.login()
-                    }.font(AppFonts.NeoSansBold16)
-                }
+                    }.font(AppFonts.NeoSansBold16).disabled(vm.credentials.email.isEmpty && vm.credentials.password.isEmpty)
                 
                 PrimaryButtonView(title: "Register", background: .clear, foreground: AppColors.White, border: AppColors.White) {
                     showRegistration.toggle()

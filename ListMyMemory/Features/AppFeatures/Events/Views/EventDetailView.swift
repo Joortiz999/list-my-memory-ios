@@ -14,7 +14,7 @@ struct EventDetailView: View {
     
     var body: some View {
         ZStack{
-            AppColors.Black.ignoresSafeArea(.all, edges: .all)
+            AppColors.White.ignoresSafeArea(.all, edges: .all)
             VStack(spacing: 0){
                 VStack{
                     HStack{
@@ -25,21 +25,21 @@ struct EventDetailView: View {
                                 ScreenNavigation().redirectToScreen(nextView: HomeView(active: .home).environmentObject(sessionService))
                             }
                         }, label: {
-                            CustomImageViewResizable(inputImage: ImageConstants.LeftArrow, color: AppColors.White).frame(width: 40, height: 40)
+                            CustomImageViewResizable(inputImage: ImageConstants.LeftArrow, color: AppColors.Blue).frame(width: 40, height: 40)
                         })
                         Spacer()
                         Button(action: {
                             // Share Button
                         }, label: {
-                            CustomImageViewResizable(inputImage: ImageConstants.Help, color: AppColors.White).frame(width: 40, height: 40)
+                            CustomImageViewResizable(inputImage: ImageConstants.Help, color: AppColors.Blue).frame(width: 40, height: 40)
                         })
                         Button(action: {
-                            // Share Button
+                            
                         }, label: {
-                            CustomImageViewResizable(inputImage: ImageConstants.Notification, color: AppColors.White).frame(width: 40, height: 40)
+                            CustomImageViewResizable(inputImage: ImageConstants.Notification, color: AppColors.Blue).frame(width: 40, height: 40)
                         })
                     }.padding(16)
-                    CustomLabelString(text: "\(event.eventName)", font: .title.bold(), foregroundColor: AppColors.White)
+                    CustomLabelString(text: "\(event.eventName)", font: .title.bold(), foregroundColor: AppColors.Blue)
                         .padding(.top, 16)
                 }
                 ZStack{
@@ -54,8 +54,8 @@ struct EventDetailView: View {
                     ScrollView(showsIndicators: false){
                         Image(ImageConstants.LargeImage)
                             .resizable()
-                                .frame(maxWidth: .infinity,maxHeight: 160).cornerRadius(8.0)
-                                .aspectRatio(contentMode: .fit).padding([.horizontal, .top], 16)
+                            .frame(maxWidth: .infinity,maxHeight: 160).cornerRadius(8.0)
+                            .aspectRatio(contentMode: .fit).padding([.horizontal, .top], 16)
                         HStack{
                             CustomLabelString(text: "Type:", font: .title2.bold(), foregroundColor: AppColors.Black).frame(alignment: .leading)
                             Spacer()

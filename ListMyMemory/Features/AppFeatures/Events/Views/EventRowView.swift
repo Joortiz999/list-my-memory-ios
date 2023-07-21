@@ -31,8 +31,8 @@ struct EventRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(eventName).font(.system(size: 26, design: .rounded).bold())
-            Text(eventDescription).font(.system(size: 12, design: .rounded).italic())
-            Text(eventPlace).font(.callout.bold())
+            Text(eventDescription).font(.system(size: 12, design: .rounded).bold())
+            Text(eventPlace).font(.system(size: 16, design: .rounded).bold())
 //            Text("").font(.caption.bold())
         }
         .padding(20)

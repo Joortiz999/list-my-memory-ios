@@ -11,7 +11,8 @@ struct InputPasswordView: View {
     
     @Binding var password: String
     let placeholder: LocalizedStringKey
-    let sfSymbol: String?
+//    let sfSymbol: String?
+    let background: Color
     @Binding var isSecure: Bool
     
     private let textFieldLeading: CGFloat = 30
@@ -19,44 +20,49 @@ struct InputPasswordView: View {
     var body: some View {
         if isSecure {
             SecureField(placeholder, text: $password)
-                .foregroundColor(AppColors.White)
-                .font(AppFonts.NeoSansBold16)
+                .foregroundColor(AppColors.Black)
+                
+                .font(.body.bold())
                 .modifier(ShowPasswordInTextField(text: $password, isSecure: $isSecure))
                 .frame(maxWidth: .infinity,
                        minHeight: 55)
-                .padding(.leading, sfSymbol == nil ? textFieldLeading / 2 : textFieldLeading)
+                
+                .padding(.leading, textFieldLeading / 2)
                 .background(
                     ZStack(alignment: .leading, content: {
-                        if let systemImage = sfSymbol {
-                            CustomImageViewResizable(inputImage: systemImage)
-                                .font(.system(size: 16, weight: .semibold))
-                                .padding(.leading, 5)
-                                .foregroundColor(!password.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6))
-                        }
+//                        if let systemImage = sfSymbol {
+//                            CustomImageViewResizable(inputImage: systemImage)
+//                                .font(.system(size: 16, weight: .semibold))
+//                                .padding(.leading, 5)
+//                                .foregroundColor(!password.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6))
+//                        }
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
                             .stroke(!password.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6), lineWidth: 3)
+                            .background(background)
                     })
-                )
+                ).cornerRadius(10)
         } else {
             TextField(placeholder, text: $password)
-                .foregroundColor(AppColors.White)
-                .font(AppFonts.NeoSansBold16)
+                .foregroundColor(AppColors.Black)
+                
+                .font(.body.bold())
                 .modifier(ShowPasswordInTextField(text: $password, isSecure: $isSecure))
                 .frame(maxWidth: .infinity,
                        minHeight: 55)
-                .padding(.leading, sfSymbol == nil ? textFieldLeading / 2 : textFieldLeading)
+                .padding(.leading,textFieldLeading / 2)
                 .background(
                     ZStack(alignment: .leading, content: {
-                        if let systemImage = sfSymbol {
-                            CustomImageViewResizable(inputImage: systemImage)
-                                .font(.system(size: 16, weight: .semibold))
-                                .padding(.leading, 5)
-                                .foregroundColor(!password.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6))
-                        }
+//                        if let systemImage = sfSymbol {
+//                            CustomImageViewResizable(inputImage: systemImage)
+//                                .font(.system(size: 16, weight: .semibold))
+//                                .padding(.leading, 5)
+//                                .foregroundColor(!password.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6))
+//                        }
                         RoundedRectangle(cornerRadius: 10, style: .continuous)
                             .stroke(!password.isEmpty ? AppColors.White.opacity(0.9) : AppColors.White.opacity(0.6), lineWidth: 3)
+                            .background(background)
                     })
-                )
+                ).cornerRadius(10)
         }
     }
 }
@@ -76,12 +82,5 @@ struct ShowPasswordInTextField: ViewModifier {
                 }.padding(.trailing, 12)
             }
         }
-    }
-}
-
-struct InputPasswordView_Previews: PreviewProvider {
-    static var previews: some View {
-        InputPasswordView(password: .constant(""), placeholder: "Password", sfSymbol: "lock", isSecure: .constant(false))
-            .preview(with: "Input password View with sfSymbol")
     }
 }

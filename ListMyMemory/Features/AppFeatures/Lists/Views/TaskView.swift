@@ -15,28 +15,28 @@ struct TaskView: View {
     
     var body: some View {
         ZStack {
-            AppColors.Black.ignoresSafeArea(.all, edges: .all)
+            AppColors.White.ignoresSafeArea(.all, edges: .all)
             VStack(spacing: 0) {
                 VStack {
                     HStack {
                         Button(action: {
                             ScreenNavigation().redirectToScreen(nextView: HomeView(active: .task).environmentObject(sessionService))
                         }) {
-                            CustomImageViewResizable(inputImage: ImageConstants.LeftArrow, color: AppColors.White).frame(width: 40, height: 40)
+                            CustomImageViewResizable(inputImage: ImageConstants.LeftArrow, color: AppColors.Green).frame(width: 40, height: 40)
                         }
                         Spacer()
                         Button(action: {
                             // Help Button
                         }) {
-                            CustomImageViewResizable(inputImage: ImageConstants.Help, color: AppColors.White).frame(width: 40, height: 40)
+                            CustomImageViewResizable(inputImage: ImageConstants.Help, color: AppColors.Green).frame(width: 40, height: 40)
                         }
                         Button(action: {
                             // Share Button
                         }) {
-                            CustomImageViewResizable(inputImage: ImageConstants.Notification, color: AppColors.White).frame(width: 40, height: 40)
+                            CustomImageViewResizable(inputImage: ImageConstants.Notification, color: AppColors.Green).frame(width: 40, height: 40)
                         }
                     }.padding(16)
-                    CustomLabelString(text: "\(task.name)", font: .title.bold(), foregroundColor: AppColors.White)
+                    CustomLabelString(text: "\(task.name)", font: .title.bold(), foregroundColor: AppColors.Green)
                         .padding(.vertical, 16)
                 }
                 ZStack {
@@ -77,7 +77,8 @@ struct TaskView: View {
         var new = BaseList.new
         new.name = newTask
         task.subList?.append(new)
-            self.newTask = ""
+        self.task = task
+        self.newTask = ""
         }
 }
     
@@ -123,9 +124,4 @@ struct TaskView: View {
                 }
             }.listStyle(.plain)
         }
-        
-//        func addNewSubTask(parentListId: String) {
-//                taskVM.createList(with: newTask, parentListId: parentListId)
-//                self.newTask = ""
-//            }
     }

@@ -13,6 +13,7 @@ struct InputTextFieldView: View {
     let keyboardType: UIKeyboardType
     let borderColor: Color
     let borderWidth: CGFloat
+    let background: Color
     let cornerRadius: CGFloat
     let sfSymbol: String?
     
@@ -20,12 +21,13 @@ struct InputTextFieldView: View {
     
     var body: some View {
         TextField(self.placeholder, text: $text)
-            .foregroundColor(AppColors.White)
-            .font(AppFonts.NeoSansBold16)
+            .foregroundColor(AppColors.Black)
+            .font(.body.bold())
                 .frame(maxWidth: .infinity,
                        minHeight: 55)
                 .padding(.leading, sfSymbol == nil ? textFieldLeading / 2 : textFieldLeading)
                 .keyboardType(keyboardType)
+                .background(background)
                 .background(
                     ZStack(alignment: .leading, content: {
                         if let systemImage = sfSymbol {
@@ -54,14 +56,15 @@ struct LargeInputTextFieldView: View {
     
     var body: some View {
         
-        TextField(self.placeholder, text: $text)
-            .foregroundColor(AppColors.White)
-            .font(AppFonts.NeoSansBold16)
+        TextField(self.placeholder, text: $text, axis: .vertical)
+            .foregroundColor(AppColors.Black)
+            .font(.body.bold())
             .frame(maxWidth: 320, minHeight: 75, alignment: .topLeading)
-            
+            .autocorrectionDisabled()
             .padding([.leading], textFieldLeading / 2)
             .padding([.top], textFieldLeading / 2)
             .keyboardType(keyboardType)
+            .background(AppColors.White)
             .background(
                 ZStack(alignment: .leading, content: {
                     RoundedRectangle(cornerRadius: cornerRadius, style: .circular)

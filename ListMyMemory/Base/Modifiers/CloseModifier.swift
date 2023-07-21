@@ -17,7 +17,9 @@ struct CloseModifier: ViewModifier {
                 Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }, label: {
-                    Image(systemName: "xmark")
+                    HStack{
+                        CustomImageViewResizable(inputImage: ImageConstants.LeftArrow, color: AppColors.White).frame(width: 40, height: 40)
+                    }
                 })
             }
     }

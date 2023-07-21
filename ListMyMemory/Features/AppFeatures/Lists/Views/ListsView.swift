@@ -27,8 +27,9 @@ struct ListsView: View {
                             .navigationBarBackButtonHidden()
                             .navigationBarItems(trailing: EditButton())
                     } else {
-                        CustomLabelString(text: "Tasks are empty.", font: .title.bold(), foregroundColor: AppColors.Green).scenePadding(.all).padding(.top, 100)
-                        CustomLabelString(text: "Add new tasks by typing\na task title, and\npressing add button.", font: .body.bold(), foregroundColor: AppColors.Green).scenePadding(.all)
+                        CustomImageViewResizable(inputImage: ImageConstants.Wrong, color: AppColors.Green.opacity(0.7)).frame(width: 80, height: 80).scenePadding(.all).padding(.top, 100)
+                        CustomLabelString(text: "Tasks are empty.", font: .title2.bold(), foregroundColor: AppColors.Green.opacity(0.7))
+                        CustomLabelString(text: "Add new tasks by typing\na task title, and pressing\n add button.", font: .callout.bold(), foregroundColor: AppColors.Green).scenePadding(.all)
                     }
                 }.onAppear{
                     taskVM.getAllLists()
@@ -38,13 +39,15 @@ struct ListsView: View {
     
     var addTaskBar : some View {
             HStack {
-                TextField("Add Task: ", text: self.$newTask).font(.title3)
+                TextField("Add Task: ", text: self.$newTask).font(.title3).padding(12)
                 SecondaryButtonView(title: "fitImage", image: ImageConstants.Add, imageColor: AppColors.White,background: AppColors.Green,height: 50, width: 50, handler: {
                     if !newTask.isEmpty {
                         self.addNewTask()
                     }
-                })
-            }
+                }).padding(12)
+            }.background(taskVM.baseLists.isEmpty ? AppColors.Green.opacity(0.4): Color.clear).cornerRadius(10)
+            
+            
         }
     
     func addNewTask() {
