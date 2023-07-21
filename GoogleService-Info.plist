@@ -13,21 +13,21 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.jorge.listmymemory</string>
+	<string>com.jorge.list-my-memory</string>
 	<key>PROJECT_ID</key>
 	<string>listmymemory</string>
 	<key>STORAGE_BUCKET</key>
 	<string>listmymemory.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:334355107890:ios:55a063ad056eea0a57ac2b</string>
 	<key>DATABASE_URL</key>

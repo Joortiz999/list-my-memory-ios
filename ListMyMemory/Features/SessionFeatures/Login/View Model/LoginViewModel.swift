@@ -28,6 +28,10 @@ final class LoginViewModelProvider: LoginViewModel, ObservableObject {
     @Published var hasError: Bool = false
     @Published var state: LoginState  = .na
     @Published var credentials: LoginCredentials = LoginCredentials.new
+    @Published var usernamePlaceholder = Login.Email
+    @Published var passwordPlaceholder = "Password"
+    @Published var isUserNameEditing: Bool = false
+    @Published var isPasswordEditing: Bool = false
     private var subscriptions = Set<AnyCancellable>()
     
     init(service: LoginService) {

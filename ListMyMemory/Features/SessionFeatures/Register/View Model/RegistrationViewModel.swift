@@ -38,8 +38,7 @@ final class RegistrationViewModelProvider: RegistrationViewModel, ObservableObje
         setuperrorSubsription()
     }
     func register() {
-        service
-            .register(with: userDetails)
+        service.register(with: userDetails)
             .sink { [weak self] res in
                 switch res {
                 case .failure(let error):

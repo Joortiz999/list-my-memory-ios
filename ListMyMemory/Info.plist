@@ -4,5 +4,15 @@
 <dict>
 	<key>Scene Configuration</key>
 	<dict/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Inter-Bold.ttf</string>
+		<string>Inter-Medium.ttf</string>
+		<string>InterRegular.ttf</string>
+		<string>InterSemibold.ttf</string>
+		<string>NeoSansStd-Bold.otf</string>
+		<string>NeoSansStd-Medium.otf</string>
+		<string>NeoSansStd-Regular.otf</string>
+	</array>
 </dict>
 </plist>

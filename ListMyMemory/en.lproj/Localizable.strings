@@ -1,0 +1,81 @@
+/* 
+  Localizable (en).strings
+  ListMyMemory
+
+  Created by JORGE ANDRES ORTIZ RODRIGUEZ on 14/7/23.
+  
+*/
+
+// URL's
+label.webpage = "Web";
+
+// Connection
+error.connection.title = "Conection Error";
+error.connection.message = "There was an error with connection, Please try again later...";
+
+// Device
+feature.not.available.title = "Alert";
+feature.not.available.message = "This device does not support this feature.";
+
+// Common
+label.hello = "Hello,";
+label.loading = "Loading";
+label.notFound = "Not Found";
+label.ok = "OK";
+label.information = "Information";
+label.more = "More";
+label.all = "All";
+label.about = "About";
+label.contitions = "Conditions";
+label.version = "Version";
+
+
+// Buttons
+button.continue = "Continue";
+button.back = "Back";
+button.select = "Select";
+button.cancel = "Cancel";
+button.accept = "Accept";
+button.decline = "Decline";
+button.close = "Close";
+button.open = "Open";
+button.retry = "Retry";
+button.tryAgain = "Try Again";
+button.login = "Log In";
+button.logout = "Log Out";
+button.saveChanges = "Save Changes";
+button.options = "Options";
+button.more.options = "More Options";
+
+// Splash
+label.splash.appTitle = "";
+
+// Registration
+label.registration.title = "Sign Up";
+label.first.name = "First Name";
+label.last.name = "Last Name";
+label.occupation = "Occupation";
+
+// Login
+label.email = "E-mail";
+label.password = "Password";
+label.login = "Log In";
+label.register = "Register";
+label.forgot.password = "Forgot Password?";
+
+// Alerts
+
+// Events
+label.events.new.events = "New Events";
+label.events.upcomming.events = "Upcomming Events";
+label.event.suggestions = "Event Suggestions";
+label.event.todays = "Today's events";
+label.event.active = "Active events";
+label.event.location = "Event Location";
+label.event.weekly = "Weekly Events";
+
+// Lists
+label.task.add.new = "Add new Events";
+label.task.weekly = "Weekly tasks";
+
+//Profile

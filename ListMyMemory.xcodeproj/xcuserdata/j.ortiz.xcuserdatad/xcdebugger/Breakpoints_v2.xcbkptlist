@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "B2113054-72BC-452B-817F-6E8795A85AF6"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "738DD7D0-ACBF-40D7-A33B-97A1A48F53C9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ListMyMemory/Features/AppFeatures/Events/Views/CreateEventView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
+            landmarkName = "contentButton"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "738DD7D0-ACBF-40D7-A33B-97A1A48F53C9 - e852dd444e303084"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.disabled(Swift.Bool) -&gt; some&gt;&gt;.0 in ListMyMemory.CreateEventView.contentButton.getter : some"
+                  moduleName = "ListMyMemory"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/j.ortiz/Documents/ListMyMemory/ListMyMemory/ListMyMemory/Features/AppFeatures/Events/Views/CreateEventView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "2232">
+               </Location>
+               <Location
+                  uuid = "738DD7D0-ACBF-40D7-A33B-97A1A48F53C9 - 8208e2bcce945e2c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in closure #1 () -&gt; ListMyMemory.SecondaryButtonView in ListMyMemory.CreateEventView.contentButton.getter : some"
+                  moduleName = "ListMyMemory"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/j.ortiz/Documents/ListMyMemory/ListMyMemory/ListMyMemory/Features/AppFeatures/Events/Views/CreateEventView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "116"
+                  endingLineNumber = "116"
+                  offsetFromSymbolStart = "2232">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
