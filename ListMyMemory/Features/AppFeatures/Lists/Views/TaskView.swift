@@ -10,7 +10,6 @@ import SwiftUI
 struct TaskView: View {
     @EnvironmentObject var sessionService: SessionServiceProvider
     @StateObject private var taskVM = ListViewModelProvider(service: ListServiceProvider())
-    @State var task: BaseList
     @State var newTask : String = ""
     
     var body: some View {
@@ -36,7 +35,7 @@ struct TaskView: View {
                             CustomImageViewResizable(inputImage: ImageConstants.Notification, color: AppColors.Green).frame(width: 40, height: 40)
                         }
                     }.padding(16)
-                    CustomLabelString(text: "\(task.name)", font: .title.bold(), foregroundColor: AppColors.Green)
+                    CustomLabelString(text: "\(taskVM.selectedBaseList.name)", font: .title.bold(), foregroundColor: AppColors.Green)
                         .padding(.vertical, 16)
                 }
                 ZStack {
@@ -48,8 +47,8 @@ struct TaskView: View {
                         ).cornerRadius(20).ignoresSafeArea()
                     }
                     VStack {
-                        if task.subList != nil {
-                            NestedListView(items: $task.subList)
+                        if taskVM.selectedBaseList.subList != nil {
+                            NestedListView(items: taskVM.selectedBaseList.subList)
                                 .padding([.vertical, .horizontal], 16)
                             addTaskBar.padding()
                         } else {
@@ -66,7 +65,7 @@ struct TaskView: View {
                 TextField("Add New Item: ", text: self.$newTask).font(.title3.bold())
                 SecondaryButtonView(title: "fitImage", image: ImageConstants.Add, imageColor: AppColors.White,background: AppColors.Green,height: 50, width: 50, handler: {
                     if !newTask.isEmpty {
-                        self.addNewSubTask(parentListId: task.id)
+                        self.addNewSubTask(parentListId: taskVM.selectedBaseList.id)
                     }
                 })
             }
@@ -76,14 +75,13 @@ struct TaskView: View {
         taskVM.createList(with: newTask, parentListId: parentListId)
         var new = BaseList.new
         new.name = newTask
-        task.subList?.append(new)
-        self.task = task
+//        taskVM.selectedBaseList.subList?.append(new)
         self.newTask = ""
         }
 }
     
     struct NestedListView: View {
-        @Binding var items: [BaseList]?
+        var items: [BaseList]?
         
         var body: some View {
             List(items ?? [], children: \.subList) { item in

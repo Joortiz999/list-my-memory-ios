@@ -20,7 +20,8 @@ struct ListsView: View {
                         List {
                             ForEach(taskVM.baseLists, id: \.self) { task in
                                 ListRowView(task: task, handler: {
-                                    ScreenNavigation().redirectToScreen(nextView: TaskView(task: task).environmentObject(sessionService))
+                                    taskVM.selectedBaseList = task
+                                    ScreenNavigation().redirectToScreen(nextView: TaskView().environmentObject(sessionService))
                                 })
                             }.onDelete(perform: self.deleteTask)
                         }.listStyle(.plain)

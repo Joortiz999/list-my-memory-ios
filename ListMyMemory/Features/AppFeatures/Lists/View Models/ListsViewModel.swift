@@ -12,6 +12,7 @@ protocol ListViewModel {
     var service: ListService { get }
     var newList: BaseList { get set }
     var baseLists: [BaseList] { get set }
+    var selectedBaseList: BaseList { get set }
     
     init(service: ListService)
     
@@ -26,6 +27,7 @@ final class ListViewModelProvider: ObservableObject, ListViewModel {
     let service: ListService
     @Published var newList: BaseList = BaseList.new
     @Published var baseLists: [BaseList] = []
+    @Published var selectedBaseList: BaseList = BaseList.new
     private var subscriptions = Set<AnyCancellable>()
     
     init(service: ListService) {
@@ -58,6 +60,11 @@ final class ListViewModelProvider: ObservableObject, ListViewModel {
                     case .finished:
                         print("List creation finished successfully.")
                         // Handle successful completion if needed.
+                        // Find the first base list where id == parentListId
+                        if let selectedBaseList = self.baseLists.first(where: { $0.id == parentListId }) {
+                            self.selectedBaseList = selectedBaseList
+                            print(self.selectedBaseList )
+                        }
                         self.getAllLists()
                     }
                 }, receiveValue: { _ in
