@@ -93,3 +93,26 @@ struct EdgeBorder: Shape {
         return path
     }
 }
+
+extension Encodable {
+    func toDictionary(encoder: JSONEncoder) throws -> [String: Any] {
+        let data = try encoder.encode(self)
+        let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+        guard let dict = jsonObject as? [String: Any] else {
+            throw NSError(domain: "Error converting to dictionary", code: 0, userInfo: nil)
+        }
+        return dict
+    }
+}
+
+extension Array where Element == String {
+    func removingDuplicates() -> [Element] {
+        var uniqueElements: [Element] = []
+        for element in self {
+            if !uniqueElements.contains(element) {
+                uniqueElements.append(element)
+            }
+        }
+        return uniqueElements
+    }
+}

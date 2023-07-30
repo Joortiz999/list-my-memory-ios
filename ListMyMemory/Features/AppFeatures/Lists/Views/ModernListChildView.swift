@@ -9,18 +9,12 @@ import SwiftUI
 
 struct ModernListChildView: View {
     @EnvironmentObject var sessionService: SessionServiceProvider
-    @State var parent: ModernListParent
-    @State private var groupedParentChild: [String: [ModernListChild]] = [:]
+    @StateObject var taskVM: ListViewModelProvider
     
     @State private var newChildName = ""
     @State private var newChildSection = ""
     @State private var newChildTypedIcon: String = ""
-    
     @State private var isAddingChild = false
-    
-    init(parent: ModernListParent) {
-        self.parent = parent
-    }
     
     var body: some View {
         ZStack {
@@ -29,6 +23,7 @@ struct ModernListChildView: View {
                 VStack {
                     HStack {
                         Button(action: {
+                            taskVM.performListOperation(taskVM.selectedParentList!, operationType: .update)
                             ScreenNavigation().redirectToScreen(nextView: HomeView(active: .task).environmentObject(sessionService))
                         }) {
                             CustomImageViewResizable(inputImage: ImageConstants.LeftArrow, color: AppColors.Green).frame(width: 40, height: 40)
@@ -46,7 +41,7 @@ struct ModernListChildView: View {
                                 .presentationDetents([.medium])
                         })
                     }.padding(16)
-                    CustomLabelString(text: "\(parent.name)", font: .title.bold(), foregroundColor: AppColors.Green)
+                    CustomLabelString(text: "\(taskVM.selectedParentList!.name)", font: .title.bold(), foregroundColor: AppColors.Green)
                         .padding(.vertical, 16)
                 }
                 ZStack {
@@ -59,10 +54,11 @@ struct ModernListChildView: View {
                     }
                     VStack {
                         List {
-                            ForEach(Array(groupedParentChild.keys.sorted()), id: \.self) { sectionName in
+                            ForEach(Array(taskVM.childLists.map { $0.section }.removingDuplicates()), id: \.self) { sectionName in
                                 Section(header: headerView(for: sectionName)) {
-                                    ForEach(groupedParentChild[sectionName]!, id: \.id) { child in
-                                        ModernChildRowView(child: child)
+                                    ForEach(taskVM.childLists.filter { $0.section == sectionName }, id: \.id) { child in
+                                        ModernChildRowView(child: child, taskVM: taskVM)
+                                        
                                     }
                                     .onDelete { indexSet in
                                         deleteChildren(at: indexSet, for: sectionName)
@@ -71,8 +67,7 @@ struct ModernListChildView: View {
                                         RoundedRectangle(cornerRadius: 10, style: .continuous)
                                             .fill(AppColors.Green.opacity(0.7))
                                             .padding(.vertical, 3)
-                                            .shadow(color: AppColors.Black.opacity(0.2),radius: 2)
-                                            
+                                            .shadow(color: AppColors.Black.opacity(0.2), radius: 2)
                                     )
                                     .listRowSeparator(.hidden)
                                 }
@@ -80,10 +75,11 @@ struct ModernListChildView: View {
                         }
                         .scrollContentBackground(.hidden)
                         .environment(\.defaultMinListRowHeight, 50)
-                        
                     }
                     .onAppear {
-                        groupedParentChild = Dictionary(grouping: parent.child, by: { $0.section })
+                        DispatchQueue.main.async {
+                            taskVM.getAllChild(taskVM.selectedParentList!)
+                        }
                     }
                 }
             }
@@ -91,7 +87,9 @@ struct ModernListChildView: View {
     }
     @ViewBuilder
     private func headerView(for sectionName: String) -> some View {
-        if let children = groupedParentChild[sectionName], ModernListChild.areAllDone(children: children) {
+        let childrenInSection = taskVM.childLists.filter { $0.section == sectionName }
+        
+        if !childrenInSection.isEmpty, ModernListChild.areAllDone(children: childrenInSection) {
             HStack {
                 CustomImageViewResizable(inputImage: ImageConstants.Check, color: AppColors.Green)
                     .frame(width: 25, height: 25, alignment: .center)
@@ -103,13 +101,18 @@ struct ModernListChildView: View {
     }
     
     private func deleteChildren(at offsets: IndexSet, for sectionName: String) {
-            if let sectionChildren = groupedParentChild[sectionName] {
-                // Remove items from the model
-                let childrenToDelete = offsets.map { sectionChildren[$0] }
-                // Perform any additional cleanup or deletion logic as needed
-                // For example: delete them from a database or update your parent model
-            }
+        let childrenInSection = taskVM.childLists.filter { $0.section == sectionName }
+        let sortedOffsets = offsets.sorted(by: >)
+        let childrenToDelete = sortedOffsets.map { childrenInSection[$0] }
+        
+        // Perform any additional cleanup or deletion logic as needed
+        // For example: delete them from a database or update your parent model
+        for childToDelete in childrenToDelete {
+            taskVM.deleteChild(childToDelete, from: taskVM.selectedParentList!)
         }
+        // Refresh the child list after deletion
+        taskVM.getAllChild(taskVM.selectedParentList!)
+    }
     
     var addNewChildSheet: some View {
         VStack {
@@ -117,7 +120,7 @@ struct ModernListChildView: View {
                 .font(.title2.bold())
                 .foregroundColor(AppColors.Orange)
                 .padding()
-
+            
             // Text fields to input child details
             Group{
                 TextField("Name", text: $newChildName).bold().frame(width: 200)
@@ -146,37 +149,37 @@ struct ModernListChildView: View {
                 .padding()
                 SecondaryButtonView(title: Buttons.Accept, image: "", imageColor: AppColors.White, handler: {
                     // Create a new child with the provided details and add it to your model
-                    let newChild = ModernListChild(parentId: parent.id, section: newChildSection.lowercased(), name: newChildName, icon: newChildTypedIcon)
-                    // Add the new child to your model or perform any other necessary action
-                    // For example: Save to a database or update your parent model
-                    parent.child.append(newChild)
                     // Clear the input fields and close the sheet
+                    taskVM.createChild(forParent: taskVM.selectedParentList!, with: newChildName, section: newChildSection)
                     newChildName = ""
                     newChildSection = ""
                     newChildTypedIcon = ""
                     isAddingChild = false
+                    
+                    taskVM.getAllChild(taskVM.selectedParentList!)
                 })
                 .padding()
             }
         }
         .padding()
     }
-
+    
 }
 
 struct ModernChildRowView: View {
     @State var child: ModernListChild
+    @StateObject var taskVM: ListViewModelProvider
     
     var body: some View {
         HStack{
             Button(action: {
                 child.isDone.toggle()
-                
+                taskVM.updateChild(child, from: taskVM.selectedParentList!)
             }, label: {
-            Image(systemName: child.isDone ? "circle.inset.filled" : "circle")
-                .foregroundColor(AppColors.White)
-                .scaleEffect(1.5)
-                .padding(.trailing, 5)
+                Image(systemName: child.isDone ? "circle.inset.filled" : "circle")
+                    .foregroundColor(AppColors.White)
+                    .scaleEffect(1.5)
+                    .padding(.trailing, 5)
             })
             Text(child.icon ?? "")
             child.isDone ? Text(child.name).font(.headline.bold()).foregroundColor(AppColors.White).strikethrough() : Text(child.name).font(.headline.bold()).foregroundColor(AppColors.White)

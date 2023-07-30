@@ -225,8 +225,7 @@ struct HomeView: View {
             }
             Spacer()
             VStack (spacing: 20){
-//                ListsView()
-                ModernListParentView().environmentObject(sessionService).scrollContentBackground(.hidden)
+                ModernListParentView(taskVM: taskVM).environmentObject(sessionService).scrollContentBackground(.hidden)
                     
             }.background(AppColors.White, ignoresSafeAreaEdges: [.bottom])
             

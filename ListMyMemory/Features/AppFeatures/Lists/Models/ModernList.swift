@@ -27,8 +27,8 @@ struct ModernListParent: Identifiable, Hashable, Codable {
         case name
     }
     
-    init(child: [ModernListChild], childDone: Double, theme: ModernListParentTheme = .defaultTheme, name: String) {
-        self.id = UUID().uuidString
+    init(id: String, child: [ModernListChild], childDone: Double = 0, theme: ModernListParentTheme = .defaultTheme, name: String) {
+        self.id = id
         self.child = child
         self.childDone = childDone
         self.theme = theme
@@ -37,16 +37,9 @@ struct ModernListParent: Identifiable, Hashable, Codable {
 }
 
 extension ModernListParent {
-    static func exampleParentList() -> [ModernListParent] {
-        return [
-            ModernListParent(child: ModernListChild.exampleChildList(parentID: "1"), childDone: 0/100, name: "Cleaning"),
-            ModernListParent(child: ModernListChild.exampleChildList(parentID: "1"), childDone: 25/100, name: "Market"),
-            ModernListParent(child: ModernListChild.exampleChildList(parentID: "1"), childDone: 50/100,theme: .marketTheme, name: "Drinks"),
-            ModernListParent(child: ModernListChild.exampleChildList(parentID: "1"), childDone: 75/100,theme: .marketTheme, name: "Trip"),
-            ModernListParent(child: ModernListChild.exampleChildList(parentID: "1"), childDone: 100/100,theme: .marketTheme, name: "Buisness")]
+    static var new: ModernListParent {
+        ModernListParent(id: UUID().uuidString, child: [], name: "")
     }
-    
-    
 }
 
 struct ModernListChild: Identifiable, Hashable, Codable {
@@ -72,8 +65,8 @@ struct ModernListChild: Identifiable, Hashable, Codable {
         case icon
     }
     
-    init(parentId: ModernListParent.ID, dateCreated: Date = Date(), isDone: Bool = false, section: String, name: String, icon: String? = nil) {
-        self.id = UUID().uuidString
+    init(id: String, parentId: String, dateCreated: Date = Date(), isDone: Bool = false, section: String, name: String, icon: String? = nil) {
+        self.id = id
         self.parentId = parentId
         self.dateCreated = dateCreated
         self.isDone = isDone
@@ -84,13 +77,7 @@ struct ModernListChild: Identifiable, Hashable, Codable {
 }
 
 extension ModernListChild {
-    static func exampleChildList(parentID: String) -> [ModernListChild] {
-        return [
-            ModernListChild(parentId: parentID, section: "Fruits", name: "Apple", icon: "🍎"),
-            ModernListChild(parentId: parentID, section: "Fruits", name: "Banana", icon: "🍌"),
-            ModernListChild(parentId: parentID, isDone: true, section: "Fruits", name: "Mango", icon: "🥭"),
-            ModernListChild(parentId: parentID, isDone: true, section: "Breads", name: "Stale Baguette", icon: "🥖"),
-            ModernListChild(parentId: parentID, section: "Meats", name: "Chicken", icon: "🍗"),
-            ModernListChild(parentId: parentID, section: "Meats", name: "Bacon", icon: "🥓")]
+    static var new: ModernListChild {
+        ModernListChild(id: UUID().uuidString, parentId: UUID().uuidString, section: "", name: "")
     }
 }

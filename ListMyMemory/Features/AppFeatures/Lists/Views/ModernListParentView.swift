@@ -52,43 +52,64 @@ struct ModernParentRowView: View {
 
 struct ModernListParentView: View {
     @EnvironmentObject var sessionService: SessionServiceProvider
-    @State private var parentLists = ModernListParent.exampleParentList()
+    @StateObject var taskVM: ListViewModelProvider
     @State var newTask : String = ""
     var body: some View {
-        addTaskBar.padding()
-        List{
-            Section {
-                ForEach(parentLists.filter{$0.childDone != 1}) { list in
-                    ModernParentRowView(parent: list) {
-                        ScreenNavigation().redirectToScreen(nextView: ModernListChildView(parent: list).environmentObject(sessionService))
+        NavigationView {
+            VStack{
+                addTaskBar.padding()
+                    .onAppear{
+                        taskVM.getAllParents()
                     }
-                    .listRowSeparator(.hidden)
-                }.listRowBackground(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(AppColors.Green.opacity(0.7))
-                        .padding(.vertical, 3)
-                )
-            } header: {
-                Text("In Progress").font(.headline.bold()).foregroundColor(AppColors.Gray)
-            }
-            Section {
-                ForEach(parentLists.filter{$0.childDone == 1}) { list in
-                    ModernParentRowView(parent: list) {
-                        ScreenNavigation().redirectToScreen(nextView: ModernListChildView(parent: list).environmentObject(sessionService))
-                    }
-                    .listRowSeparator(.hidden)
+                if !taskVM.parentLists.isEmpty {
+                    List{
+                        if !taskVM.parentLists.filter({$0.childDone != 1}).isEmpty {
+                            Section {
+                                ForEach(taskVM.parentLists.filter{$0.childDone != 1}) { list in
+                                    
+                                    ModernParentRowView(parent: list) {
+                                        taskVM.selectedParentList = list
+                                        ScreenNavigation().redirectToScreen(nextView: ModernListChildView(taskVM: taskVM).environmentObject(sessionService))
+                                    }
+                                    .listRowSeparator(.hidden)
+                                    
+                                }
+                                .onDelete(perform: self.deleteTask)
+                                .listRowBackground(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(AppColors.Green.opacity(0.7))
+                                        .padding(.vertical, 3)
+                                )
+                            } header: {
+                                Text("In Progress").font(.headline.bold()).foregroundColor(AppColors.Gray)
+                            }
+                        }
+                        if !taskVM.parentLists.filter({$0.childDone == 1}).isEmpty {
+                            Section {
+                                ForEach(taskVM.parentLists.filter{$0.childDone == 1}) { list in
+                                    ModernParentRowView(parent: list) {
+                                        taskVM.selectedParentList = list
+                                        ScreenNavigation().redirectToScreen(nextView: ModernListChildView(taskVM: taskVM).environmentObject(sessionService))
+                                    }
+                                    .listRowSeparator(.hidden)
+                                }
+//                                .onDelete(perform: self.hideTask)
+                                .listRowBackground(
+                                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                                        .fill(AppColors.Green.opacity(0.7))
+                                        .padding(.vertical, 3)
+                                )
+                                
+                            }  header: {
+                                Text("Done").font(.headline.bold())
+                            }
+                        }
+                    }.listRowSeparator(.hidden)
+                } else {
+                    Text("No task found")
                 }
-                .onDelete(perform: self.deleteTask)
-                .listRowBackground(
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(AppColors.Green.opacity(0.7))
-                        .padding(.vertical, 3)
-                )
-                
-            }  header: {
-                Text("Done").font(.headline.bold())
             }
-        }.listRowSeparator(.hidden)
+        }
     }
     var addTaskBar : some View {
             HStack {
@@ -98,21 +119,24 @@ struct ModernListParentView: View {
                         self.addNewTask()
                     }
                 }).padding(12)
-            }.background(parentLists.isEmpty ? AppColors.Green.opacity(0.4): Color.clear).cornerRadius(10)
+            }.background(taskVM.parentLists.isEmpty ? AppColors.Green.opacity(0.4): Color.clear).cornerRadius(10)
             
             
         }
     
     func addNewTask() {
-//        taskVM.createList(with: newTask)
+        taskVM.createParent(with: newTask)
         self.newTask = ""
+        taskVM.getAllParents()
     }
 
     func deleteTask(at offsets: IndexSet) {
-        let listsToDelete = offsets.map { parentLists[$0] }
-        parentLists.remove(atOffsets: offsets)
-//        for list in listsToDelete {
-//                taskVM.deleteList(list: list)
-//            }
+        let listsToDelete = offsets.map { taskVM.parentLists[$0] }
+        taskVM.parentLists.remove(atOffsets: offsets)
+        for list in listsToDelete {
+            taskVM.performListOperation(list, operationType: .delete)
+            }
+        taskVM.getAllParents()
     }
+    
 }
