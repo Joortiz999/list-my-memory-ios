@@ -31,6 +31,7 @@ struct ListMyMemoryApp: App {
                     HomeView(active: .home).environmentObject(sessionService)
                 case .loggedOut:
                     LoginView()
+
                 }
             }
         }

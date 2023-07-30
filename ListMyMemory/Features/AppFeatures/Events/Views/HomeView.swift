@@ -189,7 +189,7 @@ struct HomeView: View {
                     
                 }
                 Spacer()
-                ScrollView {
+                ScrollView(showsIndicators: false) {
                     if !eventVM.events.isEmpty {
                         CustomLabelString(text: eventVM.appliedFilter.rawValue, font: .title2.bold(), foregroundColor: AppColors.Blue).padding(.top, 25).frame(width: 320, alignment: .leading)
                         
@@ -225,7 +225,7 @@ struct HomeView: View {
             }
             Spacer()
             VStack (spacing: 20){
-                ListsView()
+                ModernListParentView(taskVM: taskVM).environmentObject(sessionService).scrollContentBackground(.hidden)
                     
             }.background(AppColors.White, ignoresSafeAreaEdges: [.bottom])
             

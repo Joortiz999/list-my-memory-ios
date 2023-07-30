@@ -38,7 +38,6 @@
 		3D46E20B2A62496A0067FCC4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3D46E20D2A62496A0067FCC4 /* Localizable.strings */; };
 		3D46E2112A6278F30067FCC4 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D46E2102A6278F30067FCC4 /* EventView.swift */; };
 		3D46E2132A632A6F0067FCC4 /* WeeklyDaysRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D46E2122A632A6F0067FCC4 /* WeeklyDaysRowView.swift */; };
-		3D46E2152A6497650067FCC4 /* ListRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D46E2142A6497650067FCC4 /* ListRowView.swift */; };
 		3D807FC429CF255A00968D14 /* ListMyMemoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D807FC329CF255A00968D14 /* ListMyMemoryApp.swift */; };
 		3D807FC829CF255B00968D14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D807FC729CF255B00968D14 /* Assets.xcassets */; };
 		3D807FCB29CF255B00968D14 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D807FCA29CF255B00968D14 /* Preview Assets.xcassets */; };
@@ -56,8 +55,6 @@
 		3DC0489F2A664D8200D822A2 /* FirebaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC0489E2A664D8200D822A2 /* FirebaseConstants.swift */; };
 		3DC048A52A68695800D822A2 /* ListsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC048A42A68695800D822A2 /* ListsViewModel.swift */; };
 		3DC048A72A68696F00D822A2 /* ListsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC048A62A68696F00D822A2 /* ListsService.swift */; };
-		3DC048A92A68698000D822A2 /* List.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC048A82A68698000D822A2 /* List.swift */; };
-		3DC048AB2A6883C000D822A2 /* TaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC048AA2A6883C000D822A2 /* TaskView.swift */; };
 		3DDEA06129CF707D00908558 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3DDEA06029CF707D00908558 /* FirebaseAuth */; };
 		3DDEA06329CF707D00908558 /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3DDEA06229CF707D00908558 /* FirebaseDatabase */; };
 		3DDEA06729CF75E700908558 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDEA06629CF75E700908558 /* RegisterView.swift */; };
@@ -78,8 +75,11 @@
 		3DDEA09529CFAE8E00908558 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DDEA09429CFAE8E00908558 /* GoogleService-Info.plist */; };
 		3DDEA09A29CFB02300908558 /* EventDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDEA09929CFB02300908558 /* EventDetailView.swift */; };
 		3DDEA09C29CFB22800908558 /* CreateEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDEA09B29CFB22800908558 /* CreateEventView.swift */; };
-		3DDEA0A029CFDEC000908558 /* ListsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDEA09F29CFDEC000908558 /* ListsView.swift */; };
 		3DDEA0AA29CFF23F00908558 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DDEA0A929CFF23F00908558 /* LaunchScreen.storyboard */; };
+		3DE81C5D2A6C93E80022506E /* ModernList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE81C5C2A6C93E80022506E /* ModernList.swift */; };
+		3DE81C5F2A6CADAA0022506E /* ModernListParentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE81C5E2A6CADAA0022506E /* ModernListParentView.swift */; };
+		3DE81C612A6CB3E80022506E /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE81C602A6CB3E80022506E /* CircularProgressView.swift */; };
+		3DE81C632A6CCBE20022506E /* ModernListChildView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DE81C622A6CCBE20022506E /* ModernListChildView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -131,7 +131,6 @@
 		3D46E20C2A62496A0067FCC4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3D46E2102A6278F30067FCC4 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		3D46E2122A632A6F0067FCC4 /* WeeklyDaysRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyDaysRowView.swift; sourceTree = "<group>"; };
-		3D46E2142A6497650067FCC4 /* ListRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListRowView.swift; sourceTree = "<group>"; };
 		3D807FC029CF255A00968D14 /* ListMyMemory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ListMyMemory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D807FC329CF255A00968D14 /* ListMyMemoryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListMyMemoryApp.swift; sourceTree = "<group>"; };
 		3D807FC729CF255B00968D14 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -152,8 +151,6 @@
 		3DC0489E2A664D8200D822A2 /* FirebaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstants.swift; sourceTree = "<group>"; };
 		3DC048A42A68695800D822A2 /* ListsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsViewModel.swift; sourceTree = "<group>"; };
 		3DC048A62A68696F00D822A2 /* ListsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsService.swift; sourceTree = "<group>"; };
-		3DC048A82A68698000D822A2 /* List.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = List.swift; sourceTree = "<group>"; };
-		3DC048AA2A6883C000D822A2 /* TaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskView.swift; sourceTree = "<group>"; };
 		3DDEA06629CF75E700908558 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
 		3DDEA06829CF770600908558 /* CloseModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseModifier.swift; sourceTree = "<group>"; };
 		3DDEA06D29CF7BE600908558 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
@@ -172,9 +169,12 @@
 		3DDEA09429CFAE8E00908558 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		3DDEA09929CFB02300908558 /* EventDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDetailView.swift; sourceTree = "<group>"; };
 		3DDEA09B29CFB22800908558 /* CreateEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateEventView.swift; sourceTree = "<group>"; };
-		3DDEA09F29CFDEC000908558 /* ListsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListsView.swift; sourceTree = "<group>"; };
 		3DDEA0A429CFF0B800908558 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3DDEA0A929CFF23F00908558 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3DE81C5C2A6C93E80022506E /* ModernList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernList.swift; sourceTree = "<group>"; };
+		3DE81C5E2A6CADAA0022506E /* ModernListParentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernListParentView.swift; sourceTree = "<group>"; };
+		3DE81C602A6CB3E80022506E /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
+		3DE81C622A6CCBE20022506E /* ModernListChildView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModernListChildView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -261,7 +261,7 @@
 		3D16D84B29DE53D300A2F51A /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				3DC048A82A68698000D822A2 /* List.swift */,
+				3DE81C5C2A6C93E80022506E /* ModernList.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -456,6 +456,7 @@
 				3D46E1E82A61F2370067FCC4 /* CustomComponentViews.swift */,
 				3D46E1FB2A6227430067FCC4 /* NavigationBarTitleView.swift */,
 				3D46E2122A632A6F0067FCC4 /* WeeklyDaysRowView.swift */,
+				3DE81C602A6CB3E80022506E /* CircularProgressView.swift */,
 			);
 			path = "Views Components";
 			sourceTree = "<group>";
@@ -651,9 +652,8 @@
 		3DDEA09E29CFDE9300908558 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3DDEA09F29CFDEC000908558 /* ListsView.swift */,
-				3D46E2142A6497650067FCC4 /* ListRowView.swift */,
-				3DC048AA2A6883C000D822A2 /* TaskView.swift */,
+				3DE81C5E2A6CADAA0022506E /* ModernListParentView.swift */,
+				3DE81C622A6CCBE20022506E /* ModernListChildView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -822,24 +822,25 @@
 				3DDEA06729CF75E700908558 /* RegisterView.swift in Sources */,
 				3DDEA07429CF7FAC00908558 /* RegistrationService.swift in Sources */,
 				3D46E1D92A61E7890067FCC4 /* LocalizableStrings.swift in Sources */,
+				3DE81C5D2A6C93E80022506E /* ModernList.swift in Sources */,
 				3D46E1CE2A61CE000067FCC4 /* IntExtensions.swift in Sources */,
 				3DDEA08D29CF941900908558 /* ForgotPasswordViewModel.swift in Sources */,
 				3D46E1F82A6213250067FCC4 /* UIAppGradient.swift in Sources */,
 				3DDEA06E29CF7BE600908558 /* ForgotPasswordView.swift in Sources */,
 				3DDEA07729CF831500908558 /* RegistrationViewModel.swift in Sources */,
-				3DC048A92A68698000D822A2 /* List.swift in Sources */,
 				3D46E1E92A61F2370067FCC4 /* CustomComponentViews.swift in Sources */,
 				3D16D85329DE5CFF00A2F51A /* DateExtensions.swift in Sources */,
 				3DC0489B2A6636A200D822A2 /* EventService.swift in Sources */,
 				3D46E1D72A61DFA80067FCC4 /* ColorConstants.swift in Sources */,
+				3DE81C5F2A6CADAA0022506E /* ModernListParentView.swift in Sources */,
 				3D46E1D02A61CF450067FCC4 /* AlertUtils.swift in Sources */,
-				3DC048AB2A6883C000D822A2 /* TaskView.swift in Sources */,
 				3D46E1BD2A61A5C70067FCC4 /* ScreenNavigation.swift in Sources */,
 				3DDEA07E29CF87EF00908558 /* SessionService.swift in Sources */,
 				3DC0489F2A664D8200D822A2 /* FirebaseConstants.swift in Sources */,
 				3D80801329CF67F900968D14 /* InputPasswordView.swift in Sources */,
 				3D46E1C22A61A7F60067FCC4 /* UIExtensinons.swift in Sources */,
 				3DDEA09A29CFB02300908558 /* EventDetailView.swift in Sources */,
+				3DE81C612A6CB3E80022506E /* CircularProgressView.swift in Sources */,
 				3DDEA07B29CF87A900908558 /* SessionUserDetails.swift in Sources */,
 				3D80800A29CF5FE900968D14 /* LoginView.swift in Sources */,
 				3D80801529CF6A3100968D14 /* PrimaryButtonView.swift in Sources */,
@@ -848,14 +849,13 @@
 				3D46E1EC2A61F5CC0067FCC4 /* InAppWebView.swift in Sources */,
 				3D46E2132A632A6F0067FCC4 /* WeeklyDaysRowView.swift in Sources */,
 				3D16D84F29DE54B100A2F51A /* Event.swift in Sources */,
+				3DE81C632A6CCBE20022506E /* ModernListChildView.swift in Sources */,
 				3D46E1C82A61AAD80067FCC4 /* StringExtensions.swift in Sources */,
 				3DDEA07129CF7F4500908558 /* RegistrationDetails.swift in Sources */,
 				3D46E1BA2A61A12A0067FCC4 /* EventSuggestionView.swift in Sources */,
 				3DC048A72A68696F00D822A2 /* ListsService.swift in Sources */,
 				3D46E1D52A61D75A0067FCC4 /* FontsConstants.swift in Sources */,
-				3D46E2152A6497650067FCC4 /* ListRowView.swift in Sources */,
 				3D807FF929CF388700968D14 /* HomeView.swift in Sources */,
-				3DDEA0A029CFDEC000908558 /* ListsView.swift in Sources */,
 				3DDEA06929CF770600908558 /* CloseModifier.swift in Sources */,
 				3D46E1CA2A61AD7D0067FCC4 /* SecondaryButtonView.swift in Sources */,
 				3DDEA08429CF8DCE00908558 /* LoginService.swift in Sources */,

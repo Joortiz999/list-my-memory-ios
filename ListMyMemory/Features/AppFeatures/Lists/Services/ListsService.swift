@@ -10,25 +10,22 @@ import Combine
 import Firebase
 import FirebaseDatabase
 
-enum ListKeys: String {
-    case id
-    case status
-    case name
-    case icon
-    case dateCreated
-    case subList
-}
-
 protocol ListService {
-    func getAllLists() -> AnyPublisher<[BaseList], Error>
-    func createList(_ name: String, parentListId: String?) -> AnyPublisher<Void, Error>
-    func updateList(_ list: BaseList) -> AnyPublisher<BaseList, Error>
-    func deleteList(_ list: BaseList) -> AnyPublisher<Void, Error>
+    func getAllParents() -> AnyPublisher<[ModernListParent], Error>
+    func getAllChilds(forParent parent: ModernListParent) -> AnyPublisher<[ModernListChild], Error>
+    func createParent(_ name: String, theme: ModernListParentTheme) -> AnyPublisher<Void, Error>
+    func createChild(parentId: String, child: ModernListChild)  -> AnyPublisher<Void, Error>
+    func updateParent(_ parent: ModernListParent) -> AnyPublisher<ModernListParent, Error>
+    func updateChild(_ child: ModernListChild, parentId: String) -> AnyPublisher<ModernListChild, Error>
+    func deleteParent(_ list: ModernListParent) -> AnyPublisher<Void, Error>
+    func deleteChild(_ child: ModernListChild, parentId: String) -> AnyPublisher<Void, Error>
 }
 
 final class ListServiceProvider: ListService {
+    
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
+    private var cancellables = Set<AnyCancellable>()
     private lazy var listsDBPath: DatabaseReference? = {
         guard let uid = Auth.auth().currentUser?.uid else {
             return nil
@@ -39,194 +36,92 @@ final class ListServiceProvider: ListService {
         return listRef
     }()
     
-    internal func getAllLists() -> AnyPublisher<[BaseList], Error> {
+    internal func getAllParents() -> AnyPublisher<[ModernListParent], Error> {
         Deferred {
-            Future<[BaseList], Error> { promise in
-                guard let listDBPath = self.listsDBPath else {
+            Future<[ModernListParent], Error> { promise in
+                guard let listsDBPath = self.listsDBPath else {
                     let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
                     promise(.failure(error))
                     return
                 }
                 
-                listDBPath.observeSingleEvent(of: .value) { [weak self] snapshot in
-                    guard let self = self else { return }
-                    
-                    var allLists: [BaseList] = []
+                listsDBPath.observeSingleEvent(of: .value) { snapshot in
+                    var allParents: [ModernListParent] = []
                     
                     if let snapshotValue = snapshot.value as? [String: Any] {
-                        // Helper function to recursively traverse nested lists
-                        func populateLists(_ listDict: [String: Any]) -> BaseList? {
-                            guard
-                                let id = listDict["id"] as? String,
-                                let statusRawValue = listDict["status"] as? String,
-                                let status = ListStatus(rawValue: statusRawValue),
-                                let name = listDict["name"] as? String,
-                                let dateDouble = listDict["dateCreated"] as? Double
-                                    
-                                else {
-                                return nil
-                            }
-                            
-                            var baseList = BaseList(
-                                id: id,
-                                status: status,
-                                name: name,
-                                icon: listDict["icon"] as? String,
-                                dateCreated: Date(timeIntervalSince1970: dateDouble),
-                                subList: nil
-                            )
-                            
-                            if let subListArray = listDict["subList"] as? [[String: Any]] {
-                                baseList.subList = subListArray.compactMap(populateLists)
-                            }
-                            
-                            return baseList
-                        }
-                        
-                        for (_, listDict) in snapshotValue {
-                            guard let listDict = listDict as? [String: Any] else {
-                                continue
-                            }
-                            
-                            if let baseList = populateLists(listDict) {
-                                allLists.append(baseList)
+                        for (parentId, parentDict) in snapshotValue {
+                            // Assuming each parentDict contains necessary data for ModernListParent
+                            // You may need to adjust the key names and data types based on your data structure
+                            if let parentDict = parentDict as? [String: Any],
+                               let themeRawValue = parentDict["theme"] as? String,
+                               let theme = ModernListParentTheme(rawValue: themeRawValue),
+                               let name = parentDict["name"] as? String,
+                               let childDone = parentDict["childDone"] as? Double {
+                                
+                                let modernListParent = ModernListParent(
+                                    id: parentId,
+                                    child: [], // Initialize empty array, as child information will be fetched separately
+                                    childDone: childDone,
+                                    theme: theme,
+                                    name: name
+                                )
+                                allParents.append(modernListParent)
                             }
                         }
                     }
                     
-                    promise(.success(allLists))
+                    promise(.success(allParents))
                 }
             }
         }
-        .receive(on: DispatchQueue.main)
+        .receive(on: RunLoop.main)
         .eraseToAnyPublisher()
     }
     
-    internal func createList(_ name: String, parentListId: String?) -> AnyPublisher<Void, Error> {
+    internal func getAllChilds(forParent parent: ModernListParent) -> AnyPublisher<[ModernListChild], Error> {
         Deferred {
-            Future<Void, Error> { promise in
+            Future<[ModernListChild], Error> { promise in
                 guard let listsDBPath = self.listsDBPath else {
                     let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
                     promise(.failure(error))
                     return
                 }
-
-                var newList = BaseList(
-                    id: UUID().uuidString,
-                    status: .inprogress,
-                    name: name,
-                    dateCreated: Date(),
-                    subList: nil
-                )
-
-                if let parentListId = parentListId {
-                    // Fetch the parent list from the database
-                    let parentListRef = listsDBPath.child(parentListId)
-                    parentListRef.observeSingleEvent(of: .value) { snapshot in
-                        if let parentListJSON = snapshot.value as? [String: Any],
-                           let parentListData = try? JSONSerialization.data(withJSONObject: parentListJSON),
-                           var parentList = try? JSONDecoder().decode(BaseList.self, from: parentListData) {
-
-                            // Add the new subtask to the parent list
-                            parentList.addSubtask(name)
-
-                            // Convert the updated parent list back to JSON
-                            let encoder = JSONEncoder()
-                            if let updatedParentListData = try? encoder.encode(parentList),
-                               let updatedParentListJSON = try? JSONSerialization.jsonObject(with: updatedParentListData, options: []) as? [String: Any] {
-
-                                // Save the updated parent list back to the database
-                                parentListRef.setValue(updatedParentListJSON) { error, _ in
-                                    if let error = error {
-                                        promise(.failure(error))
-                                    } else {
-                                        promise(.success(()))
-                                    }
-                                }
-                            } else {
-                                promise(.failure(NSError(domain: "Failed to convert parent list to JSON", code: 0, userInfo: nil)))
-                            }
-                        } else {
-                            promise(.failure(NSError(domain: "Failed to fetch parent list or decode it", code: 0, userInfo: nil)))
-                        }
-                    }
-                } else {
-                    // No parent list specified, create a new top-level list
-                    do {
-                        let encoder = JSONEncoder()
-                        let newListData = try encoder.encode(newList)
-                        let newListJSON = try JSONSerialization.jsonObject(with: newListData, options: []) as? [String: Any]
-
-                        if let newListJSON = newListJSON {
-                            listsDBPath.child(newList.id).setValue(newListJSON) { error, _ in
-                                if let error = error {
-                                    promise(.failure(error))
-                                } else {
-                                    promise(.success(()))
-                                }
+                
+                let childPath = listsDBPath.child(parent.id).child("childs")
+                
+                childPath.observeSingleEvent(of: .value) { [weak self] snapshot in
+                    guard let self = self else { return }
+                    
+                    if let snapshotValue = snapshot.value as? [String:Any] {
+                        var allChilds: [ModernListChild] = []
+                        for (_, childsDict) in snapshotValue {
+                            guard let childJSON = childsDict as? [String: Any] else { continue }
+                            
+                            do {
+                                let childData = try JSONSerialization.data(withJSONObject: childJSON)
+                                let childs = try self.decoder.decode(ModernListChild.self, from: childData)
+                                
+                                allChilds.append(childs)
+                                
+                            } catch {
+                                promise(.failure(error))
+                                return
                             }
                         }
-                    } catch {
-                        promise(.failure(error))
-                    }
-                }
-            }
-        }
-        .receive(on: DispatchQueue.main)
-        .eraseToAnyPublisher()
-    }
-
-    
-    internal func updateList(_ list: BaseList) -> AnyPublisher<BaseList, Error> {
-        Deferred {
-            Future<BaseList, Error> { promise in
-                guard let listsDBPath = self.listsDBPath else {
-                    let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
-                    promise(.failure(error))
-                    return
-                }
-
-                // Helper function to recursively update nested lists
-                func updateNestedLists(_ list: BaseList) -> [String: Any] {
-                    var listDict: [String: Any] = [
-                        "id": list.id,
-                        "status": list.status.rawValue,
-                        "name": list.name,
-                        "dateCreated": DateFormatter.listDateFormatter.string(from: list.dateCreated)
-                    ]
-
-                    if let icon = list.icon {
-                        listDict["icon"] = icon
-                    }
-
-                    if let subList = list.subList {
-                        var subListDict: [String: Any] = [:]
-                        for subListEntry in subList {
-                            let subListData = updateNestedLists(subListEntry)
-                            subListDict[subListEntry.id] = subListData
-                        }
-                        listDict["subList"] = subListDict
-                    }
-
-                    return listDict
-                }
-
-                let updatedListData = updateNestedLists(list)
-
-                listsDBPath.child(list.id).setValue(updatedListData) { error, _ in
-                    if let error = error {
-                        promise(.failure(error))
+                        promise(.success(allChilds))
                     } else {
-                        promise(.success(list))
+                        promise(.success([]))
                     }
+                    
                 }
             }
         }
         .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
+
     
-    internal func deleteList(_ list: BaseList) -> AnyPublisher<Void, Error> {
+    internal func createParent(_ name: String, theme: ModernListParentTheme) -> AnyPublisher<Void, Error> {
         Deferred {
             Future<Void, Error> { promise in
                 guard let listsDBPath = self.listsDBPath else {
@@ -234,20 +129,24 @@ final class ListServiceProvider: ListService {
                     promise(.failure(error))
                     return
                 }
-
-                // Helper function to recursively delete nested lists
-                func deleteNestedLists(_ list: BaseList) {
-                    if let subList = list.subList {
-                        for subListEntry in subList {
-                            deleteNestedLists(subListEntry)
-                            listsDBPath.child(subListEntry.id).removeValue() // Remove the nested list from the database
-                        }
-                    }
+                
+                // Step 1: Generate a unique key for the parent list
+                let ref = listsDBPath.childByAutoId()
+                let parentKey = ref.key
+                
+                // Step 2: Create the ModernListParent object
+                let parentData = ModernListParent(id: parentKey!, child: [], theme: theme, name: name)
+                
+                // Step 3: Convert the parent object to a dictionary
+                let encoder = JSONEncoder()
+                guard let parentDict = try? parentData.toDictionary(encoder: encoder) else {
+                    let error = NSError(domain: "Error encoding parent data", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
                 }
-
-                deleteNestedLists(list)
-
-                listsDBPath.child(list.id).removeValue { error, _ in
+                
+                // Step 4: Save the data to Firebase Realtime Database
+                ref.setValue(parentDict) { (error, _) in
                     if let error = error {
                         promise(.failure(error))
                     } else {
@@ -260,5 +159,179 @@ final class ListServiceProvider: ListService {
         .eraseToAnyPublisher()
     }
     
+    internal func createChild(parentId: String, child: ModernListChild) -> AnyPublisher<Void, Error> {
+        Deferred {
+            Future<Void, Error> { promise in
+                guard let listsDBPath = self.listsDBPath else {
+                    let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 1: Generate a unique key for the child
+                let ref = listsDBPath.child(parentId).child("childs").childByAutoId()
+                let childKey = ref.key
+                
+                // Step 2: Update the child's parentId and id with the generated keys
+                var newChild = child
+                newChild.id = childKey!
+                newChild.parentId = parentId
+                
+                // Step 3: Convert the child object to a dictionary
+                let encoder = JSONEncoder()
+                guard let childDict = try? newChild.toDictionary(encoder: encoder) else {
+                    let error = NSError(domain: "Error encoding child data", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 4: Save the data to Firebase Realtime Database
+                ref.setValue(childDict) { (error, _) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+
+    internal func updateParent(_ parent: ModernListParent) -> AnyPublisher<ModernListParent, Error> {
+        Deferred {
+            Future<ModernListParent, Error> { promise in
+                guard let listsDBPath = self.listsDBPath else {
+                    let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 1: Get the reference to the parent node in Firebase
+                let parentRef = listsDBPath.child(parent.id)
+                
+                let allChilds = parent.child
+                let doneChilds = allChilds.filter { $0.isDone == true}
+                let childDonePercentage = Double(doneChilds.count) / Double(allChilds.count)
+                
+                // Step 3: Update the parent's childDone property
+                var updatedParent = parent
+                updatedParent.childDone = Double(childDonePercentage)
+                
+                updatedParent.child = []
+                
+                // Step 4: Convert the parent object to a dictionary
+                let encoder = JSONEncoder()
+                guard let parentDict = try? updatedParent.toDictionary(encoder: encoder) else {
+                    let error = NSError(domain: "Error encoding parent data", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 5: Update the parent data in Firebase
+                parentRef.updateChildValues(parentDict) { (error, _) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(updatedParent))
+                    }
+                }
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+
     
+    internal func updateChild(_ child: ModernListChild, parentId: String) -> AnyPublisher<ModernListChild, Error> {
+        Deferred {
+            Future<ModernListChild, Error> { promise in
+                guard let listsDBPath = self.listsDBPath else {
+                    let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 1: Get the reference to the child node in Firebase
+                let childRef = listsDBPath.child(parentId).child("childs").child(child.id)
+                
+                // Step 2: Update the child's parentId with the provided parentId
+                var updatedChild = child
+                updatedChild.parentId = parentId
+                
+                // Step 3: Convert the updated child object to a dictionary
+                let encoder = JSONEncoder()
+                guard let childDict = try? updatedChild.toDictionary(encoder: encoder) else {
+                    let error = NSError(domain: "Error encoding child data", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 4: Update the child data in Firebase
+                childRef.updateChildValues(childDict) { (error, _) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(updatedChild))
+                    }
+                }
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+    
+    
+    internal func deleteParent(_ parent: ModernListParent) -> AnyPublisher<Void, Error> {
+        Deferred {
+            Future<Void, Error> { promise in
+                guard let listsDBPath = self.listsDBPath else {
+                    let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 1: Get the reference to the parent node in Firebase
+                let parentRef = listsDBPath.child(parent.id)
+                
+                // Step 2: Remove the parent node from Firebase
+                parentRef.removeValue { (error, _) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+    
+    internal func deleteChild(_ child: ModernListChild, parentId: String) -> AnyPublisher<Void, Error> {
+        Deferred {
+            Future<Void, Error> { promise in
+                guard let listsDBPath = self.listsDBPath else {
+                    let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 1: Get the reference to the child node in Firebase
+                let childRef = listsDBPath.child(parentId).child("childs").child(child.id)
+                
+                // Step 2: Remove the child node from Firebase
+                childRef.removeValue { (error, _) in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(()))
+                    }
+                }
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
 }
