@@ -9,14 +9,11 @@ import Foundation
 import SwiftUI
 
 struct ButtonData : Hashable{
-    
     var buttonTitle : String
     var buttonStyle: UIAlertAction.Style
-    
 }
 
 struct AlertUtils{
-    
     func showAlert(title:String,message:String,buttonData:[ButtonData],complitionHandler: @escaping (String) -> Void){
         var topController: UIViewController = UIApplication.shared.keyWindow!.rootViewController!
         while (topController.presentedViewController != nil) { topController = topController.presentedViewController! }
@@ -28,5 +25,4 @@ struct AlertUtils{
         }
         topController.present(alert, animated: true, completion: nil)
     }
-    
 }

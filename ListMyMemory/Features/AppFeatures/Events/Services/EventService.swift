@@ -32,12 +32,14 @@ protocol EventService {
     func filterEventsByDate(_ date: Date) -> AnyPublisher<[Event], Error>
     func getSingleEvent(by id: String) -> AnyPublisher<Event, Error>
     func updateSingleEvent(with event: Event) -> AnyPublisher<Void, Error>
+    func updatePassedEvent(with events: [Event]) -> AnyPublisher<Void, Error>
     func deleteEvent(by id: String) -> AnyPublisher<Void,Error>
 }
 
 
 
 final class EventServiceProvider: EventService {
+    
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     private lazy var eventsDBPath: DatabaseReference? = {
@@ -72,7 +74,7 @@ final class EventServiceProvider: EventService {
                 do {
                     let data = try self.encoder.encode(event)
                     if let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                        eventsDBPath.childByAutoId().setValue(jsonObject) { error, _ in
+                        eventsDBPath.child(event.id).setValue(jsonObject) { error, _ in
                             if let error = error {
                                 promise(.failure(error))
                             } else {
@@ -87,7 +89,7 @@ final class EventServiceProvider: EventService {
                 }
             }
         }
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -170,7 +172,7 @@ final class EventServiceProvider: EventService {
                 }
             }
         }
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
     
@@ -317,7 +319,7 @@ final class EventServiceProvider: EventService {
                 }
             }
         }
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -347,7 +349,7 @@ final class EventServiceProvider: EventService {
                 }
             }
         }
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -378,7 +380,68 @@ final class EventServiceProvider: EventService {
                 }
             }
         }
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+    
+    func updatePassedEvent(with events: [Event]) -> AnyPublisher<Void, Error> {
+        Deferred {
+            Future { promise in
+                guard let eventsDBPath = self.eventsDBPath else {
+                    promise(.failure(NSError()))
+                    return
+                }
+                
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy-MM-dd"
+
+                let group = DispatchGroup()
+
+                for event in events {
+                    guard let eventDate = dateFormatter.date(from: event.eventDate) else {
+                                        // Invalid date format, skip this event
+                                        continue
+                                    }
+                    // Compare event date with the current date
+                    if eventDate < Date() {
+                        // Event date has passed, update the event status to "DONE"
+                        group.enter()
+                        let updatedEvent = Event(id: event.id,
+                                                 eventType: event.eventType,
+                                                 eventStatus: .done,
+                                                 eventName: event.eventName,
+                                                 eventDescription: event.eventDescription,
+                                                 eventDate: event.eventDate,
+                                                 eventPlace: event.eventPlace,
+                                                 eventLocation: event.eventLocation,
+                                                 eventTime: event.eventTime)
+
+                        do {
+                            let data = try self.encoder.encode(updatedEvent)
+                            if let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                                let eventRef = eventsDBPath.child(event.id)
+                                eventRef.updateChildValues(jsonObject) { error, _ in
+                                    if let error = error {
+                                        promise(.failure(error))
+                                    } else {
+                                        group.leave() // Mark the update as completed
+                                    }
+                                }
+                            } else {
+                                promise(.failure(NSError()))
+                            }
+                        } catch {
+                            promise(.failure(error))
+                        }
+                    }
+                }
+
+                group.notify(queue: .main) {
+                    promise(.success(())) // All updates completed
+                }
+            }
+        }
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
 
@@ -405,7 +468,7 @@ final class EventServiceProvider: EventService {
                 }
             }
         }
-        .receive(on: RunLoop.main)
+        .receive(on: DispatchQueue.main)
         .eraseToAnyPublisher()
     }
     

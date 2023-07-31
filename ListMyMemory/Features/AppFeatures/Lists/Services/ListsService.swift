@@ -17,6 +17,7 @@ protocol ListService {
     func createChild(parentId: String, child: ModernListChild)  -> AnyPublisher<Void, Error>
     func updateParent(_ parent: ModernListParent) -> AnyPublisher<ModernListParent, Error>
     func updateChild(_ child: ModernListChild, parentId: String) -> AnyPublisher<ModernListChild, Error>
+    func redoChilds(_ childs: [ModernListChild], parentId: String) -> AnyPublisher<[ModernListChild], Error>
     func deleteParent(_ list: ModernListParent) -> AnyPublisher<Void, Error>
     func deleteChild(_ child: ModernListChild, parentId: String) -> AnyPublisher<Void, Error>
 }
@@ -282,6 +283,57 @@ final class ListServiceProvider: ListService {
         .eraseToAnyPublisher()
     }
     
+    internal func redoChilds(_ childs: [ModernListChild], parentId: String) -> AnyPublisher<[ModernListChild], Error> {
+        Deferred {
+            Future<[ModernListChild], Error> { promise in
+                guard let listsDBPath = self.listsDBPath else {
+                    let error = NSError(domain: "listsDBPath is nil", code: 0, userInfo: nil)
+                    promise(.failure(error))
+                    return
+                }
+                
+                // Step 1: Create a dictionary to hold the updates
+                var childUpdates: [String: [String: Any]] = [:]
+                
+                // Step 2: Update the isDone property of each child to false
+                let updatedChilds = childs.map { child in
+                    ModernListChild(
+                        id: child.id,
+                        parentId: parentId,
+                        dateCreated: child.dateCreated,
+                        isDone: false,
+                        section: child.section,
+                        name: child.name,
+                        icon: child.icon
+                    )
+                }
+                
+                // Step 3: Convert the updated child objects to dictionaries
+                let encoder = JSONEncoder()
+                for updatedChild in updatedChilds {
+                    guard let childDict = try? updatedChild.toDictionary(encoder: encoder) else {
+                        let error = NSError(domain: "Error encoding child data", code: 0, userInfo: nil)
+                        promise(.failure(error))
+                        return
+                    }
+                    childUpdates["\(parentId)/childs/\(updatedChild.id)"] = childDict
+                }
+                
+                // Step 4: Perform multi-location update in Firebase
+                listsDBPath.updateChildValues(childUpdates) { error, _ in
+                    if let error = error {
+                        promise(.failure(error))
+                    } else {
+                        promise(.success(updatedChilds))
+                    }
+                }
+            }
+        }
+        .receive(on: DispatchQueue.main)
+        .eraseToAnyPublisher()
+    }
+
+
     
     internal func deleteParent(_ parent: ModernListParent) -> AnyPublisher<Void, Error> {
         Deferred {

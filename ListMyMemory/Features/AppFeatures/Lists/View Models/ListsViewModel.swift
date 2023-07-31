@@ -10,6 +10,7 @@ import Combine
 
 enum ListOperationType {
     case update
+    case redo
     case delete
 }
 
@@ -28,10 +29,12 @@ protocol ListViewModel {
     func createChild(forParent parent: ModernListParent, with name: String, section: String)
     func performListOperation(_ list: ModernListParent, operationType: ListOperationType)
     func updateChild(_ child: ModernListChild, from parent: ModernListParent)
+    func redoChilds(_ child: [ModernListChild], from parent: ModernListParent)
     func deleteChild(_ child: ModernListChild, from parent: ModernListParent)
 }
 
 final class ListViewModelProvider: ObservableObject, ListViewModel {
+    
     @Published var newParent: ModernListParent = ModernListParent.new
     @Published var newChild: ModernListChild = ModernListChild.new
     @Published var parentLists: [ModernListParent] = []
@@ -55,8 +58,7 @@ final class ListViewModelProvider: ObservableObject, ListViewModel {
                     break
                 }
             }, receiveValue: { [weak self] data in
-                self?.parentLists = data
-                print(data)
+                self?.parentLists = data.sorted(by: {$0.childDone > $1.childDone})
                 // Perform any additional UI updates or completion handling here
             })
             .store(in: &subscriptions)
@@ -72,8 +74,7 @@ final class ListViewModelProvider: ObservableObject, ListViewModel {
                     break
                 }
             }, receiveValue: { data in
-                self.childLists = data
-                // Perform any additional UI updates or completion handling here
+                self.childLists = data.sorted(by: {$0.dateCreated > $1.dateCreated})
             })
             .store(in: &subscriptions)
     }
@@ -87,32 +88,28 @@ final class ListViewModelProvider: ObservableObject, ListViewModel {
                     // Handle error, show alert, etc.
                 case .finished:
                     print("List creation finished successfully.")
-                    // Handle successful completion if needed.
                 }
             }, receiveValue: { _ in
-                // The receiveValue will not be called in this case, as the createParent function returns Void.
             })
             .store(in: &subscriptions)
     }
     
     func createChild(forParent parent: ModernListParent, with name: String, section: String) {
-            let newChild = ModernListChild(id: UUID().uuidString, parentId: parent.id, section: section, name: name)
-            service.createChild(parentId: parent.id, child: newChild)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        print("Failed to create child list: \(error)")
-                        // Handle error, show alert, etc.
-                    case .finished:
-                        print("Child list creation finished successfully.")
-                        // Handle successful completion if needed.
-                    }
-                }, receiveValue: { _ in
-                    // The receiveValue will not be called in this case, as the createChild function returns Void.
-                })
-                .store(in: &subscriptions)
-        }
-
+        let newChild = ModernListChild(id: UUID().uuidString, parentId: parent.id, section: section, name: name)
+        service.createChild(parentId: parent.id, child: newChild)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    print("Failed to create child list: \(error)")
+                    // Handle error, show alert, etc.
+                case .finished:
+                    print("Child list creation finished successfully.")
+                }
+            }, receiveValue: { _ in
+            })
+            .store(in: &subscriptions)
+    }
+    
     // Combine the update and delete operations into a single function.
     func performListOperation(_ list: ModernListParent, operationType: ListOperationType) {
         switch operationType {
@@ -129,10 +126,8 @@ final class ListViewModelProvider: ObservableObject, ListViewModel {
                         // Handle error, show alert, etc.
                     case .finished:
                         print("List updated successfully.")
-                        // Handle successful completion if needed.
                     }
                 }, receiveValue: { _ in
-                    // The receiveValue will not be called in this case, as the updateParent function returns ModernListParent.
                 })
                 .store(in: &subscriptions)
         case .delete:
@@ -144,54 +139,66 @@ final class ListViewModelProvider: ObservableObject, ListViewModel {
                         // Handle error, show alert, etc.
                     case .finished:
                         print("List deleted successfully.")
-                        // Handle successful completion if needed.
                     }
                 }, receiveValue: { _ in
-                    // The receiveValue will not be called in this case, as the deleteParent function returns Void.
                 })
                 .store(in: &subscriptions)
+        case .redo:
+            break
         }
     }
     
     // Function to update a child list
     func updateChild(_ child: ModernListChild, from parent: ModernListParent) {
         service.updateChild(child, parentId: parent.id)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        print("Failed to update child list: \(error)")
-                        // Handle error, show alert, etc.
-                    case .finished:
-                        print("Child list updated successfully.")
-                        // Handle successful completion if needed.
-                        self.getAllChild(self.selectedParentList!)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                            self.performListOperation(self.selectedParentList!, operationType: .update)
-                        })
-                        
-                    }
-                }, receiveValue: { _ in
-                    // The receiveValue will not be called in this case, as the updateChild function returns ModernListChild.
-                })
-                .store(in: &subscriptions)
-        }
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    print("Failed to update child list: \(error)")
+                    // Handle error, show alert, etc.
+                case .finished:
+                    self.getAllChild(self.selectedParentList!)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                        self.performListOperation(self.selectedParentList!, operationType: .update)
+                    })
+                    
+                }
+            }, receiveValue: { _ in
+            })
+            .store(in: &subscriptions)
+    }
+    func redoChilds(_ childs: [ModernListChild], from parent: ModernListParent) {
+        service.redoChilds(childs, parentId: parent.id)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    print("Failed to update child list: \(error)")
+                    // Handle error, show alert, etc.
+                case .finished:
+                    self.getAllChild(self.selectedParentList!)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4, execute: {
+                        self.performListOperation(self.selectedParentList!, operationType: .update)
+                    })
+                    
+                }
+            }, receiveValue: { _ in
+            })
+            .store(in: &subscriptions)
+    }
     
     // Function to delete a child list
-        func deleteChild(_ child: ModernListChild, from parent: ModernListParent) {
-            service.deleteChild(child, parentId: parent.id)
-                .sink(receiveCompletion: { completion in
-                    switch completion {
-                    case .failure(let error):
-                        print("Failed to delete child list: \(error)")
-                        // Handle error, show alert, etc.
-                    case .finished:
-                        print("Child list deleted successfully.")
-                        // Handle successful completion if needed.
-                    }
-                }, receiveValue: { _ in
-                    // The receiveValue will not be called in this case, as the deleteChild function returns Void.
-                })
-                .store(in: &subscriptions)
-        }
-
+    func deleteChild(_ child: ModernListChild, from parent: ModernListParent) {
+        service.deleteChild(child, parentId: parent.id)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let error):
+                    print("Failed to delete child list: \(error)")
+                    // Handle error, show alert, etc.
+                case .finished:
+                    print("Child list deleted successfully.")
+                }
+            }, receiveValue: { _ in
+            })
+            .store(in: &subscriptions)
+    }
 }

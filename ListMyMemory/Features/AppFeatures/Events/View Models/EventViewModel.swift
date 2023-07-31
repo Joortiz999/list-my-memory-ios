@@ -64,7 +64,7 @@ final class EventViewModelProvider: ObservableObject, EventViewModel {
                 }
             }, receiveValue: { data in
                 self.foundEventDate = date
-                self.events = data
+                self.events = data.sorted(by: {$0.eventDate > $1.eventDate})
                 // Perform any additional UI updates or completion handling here
             })
             .store(in: &subscriptions)
@@ -96,8 +96,9 @@ final class EventViewModelProvider: ObservableObject, EventViewModel {
                     break
                 }
             }, receiveValue: { data in
-                self.events = data
+                self.events = data.sorted(by: {$0.eventDate > $1.eventDate})
                 // Perform any additional UI updates or completion handling here
+                self.updatePassedEvents(events: data)
             })
             .store(in: &subscriptions)
     }
@@ -112,7 +113,7 @@ final class EventViewModelProvider: ObservableObject, EventViewModel {
                     break
                 }
             }, receiveValue: { data in
-                self.events = data
+                self.events = data.sorted(by: {$0.eventDate > $1.eventDate})
                 // Perform any additional UI updates or completion handling here
             })
             .store(in: &subscriptions)
@@ -128,7 +129,7 @@ final class EventViewModelProvider: ObservableObject, EventViewModel {
                     break
                 }
             }, receiveValue: { data in
-                self.events = data
+                self.events = data.sorted(by: {$0.eventDate > $1.eventDate})
                 // Perform any additional UI updates or completion handling here
             })
             .store(in: &subscriptions)
@@ -144,7 +145,7 @@ final class EventViewModelProvider: ObservableObject, EventViewModel {
                     break
                 }
             }, receiveValue: { data in
-                self.events = data
+                self.events = data.sorted(by: {$0.eventDate > $1.eventDate})
                 // Perform any additional UI updates or completion handling here
             })
             .store(in: &subscriptions)
@@ -184,6 +185,22 @@ final class EventViewModelProvider: ObservableObject, EventViewModel {
 
     func updateEvent(event: Event) {
         service.updateSingleEvent(with: event)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .failure(let err):
+                    print("Failed: \(err)")
+                case .finished:
+                    print("Event updated successfully.")
+                    // Handle successful completion if needed.
+                }
+            }, receiveValue: { _ in
+                // The receiveValue will not be called in this case, as the createList function returns Void.
+            })
+            .store(in: &subscriptions)
+    }
+    
+    private func updatePassedEvents(events: [Event]){
+        service.updatePassedEvent(with: events)
             .sink(receiveCompletion: { completion in
                 switch completion {
                 case .failure(let err):

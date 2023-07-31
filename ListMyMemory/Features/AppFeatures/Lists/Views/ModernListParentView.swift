@@ -92,8 +92,14 @@ struct ModernListParentView: View {
                                         ScreenNavigation().redirectToScreen(nextView: ModernListChildView(taskVM: taskVM).environmentObject(sessionService))
                                     }
                                     .listRowSeparator(.hidden)
+//                                    .swipeActions {
+//                                                Button("REDO") {
+//                                                    self.redoTask(task: list)
+//                                                }
+//                                                .tint(AppColors.Yellow)
+//                                            }
                                 }
-//                                .onDelete(perform: self.hideTask)
+                               
                                 .listRowBackground(
                                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                                         .fill(AppColors.Green.opacity(0.7))
@@ -106,7 +112,9 @@ struct ModernListParentView: View {
                         }
                     }.listRowSeparator(.hidden)
                 } else {
-                    Text("No task found")
+                    CustomImageViewResizable(inputImage: ImageConstants.Wrong, color: AppColors.Blue.opacity(0.7)).frame(width: 80, height: 80).padding(.top, 40)
+                    CustomLabelString(text: "Tasks\nare empty.", font: .title.bold(), foregroundColor: AppColors.Blue).scenePadding(.all)
+                    CustomLabelString(text: "Add new tasks by\ntyping a name above\nand pressing the add\nbutton.", font: .body.bold(), foregroundColor: AppColors.Blue).scenePadding(.all)
                 }
             }
         }
@@ -136,6 +144,11 @@ struct ModernListParentView: View {
         for list in listsToDelete {
             taskVM.performListOperation(list, operationType: .delete)
             }
+        taskVM.getAllParents()
+    }
+    
+    func redoTask(task: ModernListParent) {
+        taskVM.performListOperation(task, operationType: .redo)
         taskVM.getAllParents()
     }
     

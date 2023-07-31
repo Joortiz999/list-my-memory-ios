@@ -40,6 +40,18 @@ struct ModernListChildView: View {
                             addNewChildSheet
                                 .presentationDetents([.medium])
                         })
+                        Button(action: {
+                            // Help Button
+                            // Confirm PopUp
+                            taskVM.redoChilds(taskVM.childLists, from: taskVM.selectedParentList!)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8, execute: {
+                                //Loading
+                            taskVM.performListOperation(taskVM.selectedParentList!, operationType: .update)
+                            ScreenNavigation().redirectToScreen(nextView: HomeView(active: .task).environmentObject(sessionService))
+                            })
+                        }) {
+                            CustomImageViewResizable(inputImage: ImageConstants.Refresh, color: AppColors.Green).frame(width: 40, height: 40)
+                        }
                     }.padding(16)
                     CustomLabelString(text: "\(taskVM.selectedParentList!.name)", font: .title.bold(), foregroundColor: AppColors.Green)
                         .padding(.vertical, 16)
@@ -150,7 +162,7 @@ struct ModernListChildView: View {
                 SecondaryButtonView(title: Buttons.Accept, image: "", imageColor: AppColors.White, handler: {
                     // Create a new child with the provided details and add it to your model
                     // Clear the input fields and close the sheet
-                    taskVM.createChild(forParent: taskVM.selectedParentList!, with: newChildName, section: newChildSection)
+                    taskVM.createChild(forParent: taskVM.selectedParentList!, with: newChildTypedIcon+" "+newChildName, section: newChildSection)
                     newChildName = ""
                     newChildSection = ""
                     newChildTypedIcon = ""

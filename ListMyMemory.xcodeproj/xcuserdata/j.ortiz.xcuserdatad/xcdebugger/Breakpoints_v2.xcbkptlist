@@ -3,4 +3,86 @@
    uuid = "B2113054-72BC-452B-817F-6E8795A85AF6"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "67CA4B4F-6B8F-42AF-9372-A55F2E6230E1"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ListMyMemory/Features/AppFeatures/Events/Services/EventService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "406"
+            endingLineNumber = "406"
+            landmarkName = "updatePassedEvent(with:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2AEBA6E9-AC91-410E-AA4C-644EB7ECD86D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ListMyMemory/Features/AppFeatures/Lists/Services/ListsService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "redoChilds(_:parentId:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2666E3D5-7486-4134-BBAE-F920DD51D483"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ListMyMemory/Features/AppFeatures/Lists/Services/ListsService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
+            landmarkName = "redoChilds(_:parentId:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "2666E3D5-7486-4134-BBAE-F920DD51D483 - 4662004537f177ed"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 ((Swift.Result&lt;Swift.Array&lt;ListMyMemory.ModernListChild&gt;, Swift.Error&gt;) -&gt; ()) -&gt; () in closure #1 () -&gt; Combine.Future&lt;Swift.Array&lt;ListMyMemory.ModernListChild&gt;, Swift.Error&gt; in ListMyMemory.ListServiceProvider.redoChilds(_: Swift.Array&lt;ListMyMemory.ModernListChild&gt;, parentId: Swift.String) -&gt; Combine.AnyPublisher&lt;Swift.Array&lt;ListMyMemory.ModernListChild&gt;, Swift.Error&gt;"
+                  moduleName = "ListMyMemory"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/j.ortiz/Documents/ListMyMemory/ListMyMemory/ListMyMemory/Features/AppFeatures/Lists/Services/ListsService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "323"
+                  endingLineNumber = "323"
+                  offsetFromSymbolStart = "1556">
+               </Location>
+               <Location
+                  uuid = "2666E3D5-7486-4134-BBAE-F920DD51D483 - 9c3d9095ab8b9b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 (Swift.Optional&lt;Swift.Error&gt;, __C.FIRDatabaseReference) -&gt; () in closure #1 ((Swift.Result&lt;Swift.Array&lt;ListMyMemory.ModernListChild&gt;, Swift.Error&gt;) -&gt; ()) -&gt; () in closure #1 () -&gt; Combine.Future&lt;Swift.Array&lt;ListMyMemory.ModernListChild&gt;, Swift.Error&gt; in ListMyMemory.ListServiceProvider.redoChilds(_: Swift.Array&lt;ListMyMemory.ModernListChild&gt;, parentId: Swift.String) -&gt; Combine.AnyPublisher&lt;Swift.Array&lt;ListMyMemory.ModernListChild&gt;, Swift.Error&gt;"
+                  moduleName = "ListMyMemory"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/j.ortiz/Documents/ListMyMemory/ListMyMemory/ListMyMemory/Features/AppFeatures/Lists/Services/ListsService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "324"
+                  endingLineNumber = "324"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

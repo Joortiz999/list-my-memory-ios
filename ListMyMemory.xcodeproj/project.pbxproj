@@ -36,7 +36,6 @@
 		3D46E2022A6244570067FCC4 /* Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D46E2012A6244570067FCC4 /* Singleton.swift */; };
 		3D46E2062A6249020067FCC4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3D46E2082A6249020067FCC4 /* Localizable.strings */; };
 		3D46E20B2A62496A0067FCC4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3D46E20D2A62496A0067FCC4 /* Localizable.strings */; };
-		3D46E2112A6278F30067FCC4 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D46E2102A6278F30067FCC4 /* EventView.swift */; };
 		3D46E2132A632A6F0067FCC4 /* WeeklyDaysRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D46E2122A632A6F0067FCC4 /* WeeklyDaysRowView.swift */; };
 		3D807FC429CF255A00968D14 /* ListMyMemoryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D807FC329CF255A00968D14 /* ListMyMemoryApp.swift */; };
 		3D807FC829CF255B00968D14 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D807FC729CF255B00968D14 /* Assets.xcassets */; };
@@ -50,6 +49,7 @@
 		3D80801129CF669100968D14 /* PreviewLayoutComponentModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D80801029CF669100968D14 /* PreviewLayoutComponentModifier.swift */; };
 		3D80801329CF67F900968D14 /* InputPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D80801229CF67F900968D14 /* InputPasswordView.swift */; };
 		3D80801529CF6A3100968D14 /* PrimaryButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D80801429CF6A3100968D14 /* PrimaryButtonView.swift */; };
+		3DA859FC2A773D0800002BB2 /* SharingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA859FB2A773D0800002BB2 /* SharingView.swift */; };
 		3DC0489B2A6636A200D822A2 /* EventService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC0489A2A6636A200D822A2 /* EventService.swift */; };
 		3DC0489D2A664B7900D822A2 /* EventViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC0489C2A664B7900D822A2 /* EventViewModel.swift */; };
 		3DC0489F2A664D8200D822A2 /* FirebaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC0489E2A664D8200D822A2 /* FirebaseConstants.swift */; };
@@ -129,7 +129,6 @@
 		3D46E2012A6244570067FCC4 /* Singleton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
 		3D46E2072A6249020067FCC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3D46E20C2A62496A0067FCC4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
-		3D46E2102A6278F30067FCC4 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		3D46E2122A632A6F0067FCC4 /* WeeklyDaysRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyDaysRowView.swift; sourceTree = "<group>"; };
 		3D807FC029CF255A00968D14 /* ListMyMemory.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ListMyMemory.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D807FC329CF255A00968D14 /* ListMyMemoryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListMyMemoryApp.swift; sourceTree = "<group>"; };
@@ -146,6 +145,7 @@
 		3D80801029CF669100968D14 /* PreviewLayoutComponentModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewLayoutComponentModifier.swift; sourceTree = "<group>"; };
 		3D80801229CF67F900968D14 /* InputPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputPasswordView.swift; sourceTree = "<group>"; };
 		3D80801429CF6A3100968D14 /* PrimaryButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButtonView.swift; sourceTree = "<group>"; };
+		3DA859FB2A773D0800002BB2 /* SharingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharingView.swift; sourceTree = "<group>"; };
 		3DC0489A2A6636A200D822A2 /* EventService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventService.swift; sourceTree = "<group>"; };
 		3DC0489C2A664B7900D822A2 /* EventViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventViewModel.swift; sourceTree = "<group>"; };
 		3DC0489E2A664D8200D822A2 /* FirebaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseConstants.swift; sourceTree = "<group>"; };
@@ -457,6 +457,7 @@
 				3D46E1FB2A6227430067FCC4 /* NavigationBarTitleView.swift */,
 				3D46E2122A632A6F0067FCC4 /* WeeklyDaysRowView.swift */,
 				3DE81C602A6CB3E80022506E /* CircularProgressView.swift */,
+				3DA859FB2A773D0800002BB2 /* SharingView.swift */,
 			);
 			path = "Views Components";
 			sourceTree = "<group>";
@@ -633,7 +634,6 @@
 				3D46E1B92A61A12A0067FCC4 /* EventSuggestionView.swift */,
 				3DDEA09929CFB02300908558 /* EventDetailView.swift */,
 				3DDEA09B29CFB22800908558 /* CreateEventView.swift */,
-				3D46E2102A6278F30067FCC4 /* EventView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -853,6 +853,7 @@
 				3D46E1C82A61AAD80067FCC4 /* StringExtensions.swift in Sources */,
 				3DDEA07129CF7F4500908558 /* RegistrationDetails.swift in Sources */,
 				3D46E1BA2A61A12A0067FCC4 /* EventSuggestionView.swift in Sources */,
+				3DA859FC2A773D0800002BB2 /* SharingView.swift in Sources */,
 				3DC048A72A68696F00D822A2 /* ListsService.swift in Sources */,
 				3D46E1D52A61D75A0067FCC4 /* FontsConstants.swift in Sources */,
 				3D807FF929CF388700968D14 /* HomeView.swift in Sources */,
@@ -868,7 +869,6 @@
 				3D807FC429CF255A00968D14 /* ListMyMemoryApp.swift in Sources */,
 				3D80801129CF669100968D14 /* PreviewLayoutComponentModifier.swift in Sources */,
 				3DDEA08729CF8F0900908558 /* LoginViewModel.swift in Sources */,
-				3D46E2112A6278F30067FCC4 /* EventView.swift in Sources */,
 				3DDEA09C29CFB22800908558 /* CreateEventView.swift in Sources */,
 				3D80800E29CF61B800968D14 /* InputTextFieldView.swift in Sources */,
 				3DDEA09129CFA11700908558 /* SettingsView.swift in Sources */,

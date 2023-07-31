@@ -29,15 +29,15 @@ struct EventDetailView: View {
                         })
                         Spacer()
                         Button(action: {
-                            // Share Button
-                        }, label: {
-                            CustomImageViewResizable(inputImage: ImageConstants.Help, color: AppColors.Blue).frame(width: 40, height: 40)
-                        })
-                        Button(action: {
                             
                         }, label: {
-                            CustomImageViewResizable(inputImage: ImageConstants.Notification, color: AppColors.Blue).frame(width: 40, height: 40)
+                            CustomImageViewResizable(inputImage: ImageConstants.Info, color: AppColors.Blue).frame(width: 40, height: 40)
                         })
+                        SharingView {
+                            let snapshot = EventDetailSharingView(event: event).asImage
+                            sharingSheet(image: snapshot)
+                        }
+                        
                     }.padding(16)
                     CustomLabelString(text: "\(event.eventName)", font: .title.bold(), foregroundColor: AppColors.Blue)
                         .padding(.top, 16)
@@ -123,4 +123,82 @@ struct EventDetailView: View {
     }
 }
 
-
+struct EventDetailSharingView: View {
+    var event: Event
+    
+    var body: some View {
+        ZStack{
+            AppColors.White.ignoresSafeArea(.all, edges: .all)
+            VStack(spacing: 0){
+                VStack{
+                    CustomLabelString(text: "\(event.eventName)", font: .title.bold(), foregroundColor: AppColors.Blue)
+                        .padding(.top, 90)
+                }
+                ZStack{
+                    Group{
+                        LinearGradient(
+                            colors: [AppColors.White, AppColors.White, AppColors.Blue],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ).cornerRadius(20).ignoresSafeArea()
+                    }
+                    
+                    ScrollView(showsIndicators: false){
+                        
+                        HStack{
+                            CustomLabelString(text: "When:", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .leading)
+                            Spacer()
+                            CustomLabelString(text: "\(event.eventDate)", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .trailing)
+                            
+                        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading).padding([.horizontal, .vertical], 16)
+                        Divider()
+                            .frame(width: 330, height: 2)
+                            .overlay(AppColors.Blue)
+                        HStack{
+                            CustomLabelString(text: "Time:", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .leading)
+                            Spacer()
+                            CustomLabelString(text: "\(event.eventTime)", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .trailing)
+                            
+                        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading).padding([.horizontal, .vertical], 16)
+                        Divider()
+                            .frame(width: 330, height: 2)
+                            .overlay(AppColors.Blue)
+                        HStack{
+                            CustomLabelString(text: "Where:", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .leading)
+                            Spacer()
+                            VStack{
+                                HStack{
+                                    Spacer()
+                                    CustomLabelString(text: "\(event.eventPlace)", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .trailing)
+                                }
+                                HStack{
+                                    Spacer()
+                                    CustomLabelString(text: "\(event.eventLocation)", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .trailing)
+                                }
+                            }
+                            
+                        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading).padding([.horizontal, .vertical], 16)
+                        Divider()
+                            .frame(width: 330, height: 2)
+                            .overlay(AppColors.Blue)
+                        VStack{
+                            HStack{
+                                CustomLabelString(text: "Description:", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .topLeading)
+                                Spacer()
+                            }
+                            HStack{
+                                Spacer()
+                                CustomLabelString(text: "\(event.eventDescription)", font: .title3.bold(), foregroundColor: AppColors.Black).frame(alignment: .leading).padding(16)
+                                Spacer()
+                            }
+                            
+                            
+                        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading).padding([.horizontal, .vertical], 16)
+                        
+                    }.padding([.vertical, .horizontal], 16)
+                }
+                .padding(.top, 26)
+            }
+        }
+    }
+}

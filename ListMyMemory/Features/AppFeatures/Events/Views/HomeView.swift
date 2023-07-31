@@ -28,8 +28,10 @@ struct HomeView: View {
     var body: some View {
         
         VStack {
-            Text("List My Memory").font(.caption)
-                .bold()
+            if active != .settings {
+                Text("List My Memory").font(.caption)
+                    .bold()
+            }
             TabView(selection: $active){
                 homeView
                     .tabItem {
@@ -74,8 +76,6 @@ struct HomeView: View {
                     ScreenNavigation().redirectToScreen(nextView: CreateEventView(title: Events.NewEvents, eventSuggested: Event.new).environmentObject(sessionService))
                 })
                 SecondaryButtonView(title: Events.EventSuggestions,image: ImageConstants.Eye, imageColor: AppColors.Black.opacity(0.7), background: AppColors.Orange.opacity(0.7),foreground: AppColors.Black, height: 100, width: 220, handler: {
-                    print("Feature under Development")
-                    // present sheet
                     showEventSuggestion.toggle()
                 })
                 .sheet(isPresented: $showEventSuggestion) {
@@ -106,7 +106,6 @@ struct HomeView: View {
                             let day = startDay.nextDate(by: index)
                             WeeklyDaysRowView(weekDayHumanReadable: day.getHumanReadableDayString(), weekDay: day.daytoString(), backgroundColor: eventVM.foundEventDate != day ? AppColors.Red.opacity(0.8) : AppColors.Red, borderColor: AppColors.White.opacity(0.8)) {
                                 eventVM.getEventsByDate(date: day)
-//                                print("filtering by \(day.getHumanReadableDayString()), \(day.daytoString())")
                             }
                         }
                     }
@@ -194,7 +193,7 @@ struct HomeView: View {
                         CustomLabelString(text: eventVM.appliedFilter.rawValue, font: .title2.bold(), foregroundColor: AppColors.Blue).padding(.top, 25).frame(width: 320, alignment: .leading)
                         
                         ForEach(eventVM.events, id: \.id) { event in
-                            EventRowView(eventName: event.eventName , eventDescription: event.eventDescription , eventPlace: event.eventPlace , backgroundColor: AppColors.Blue.opacity(0.7), borderColor: AppColors.White) {
+                            EventRowView(eventName: event.eventName , eventDescription: event.eventDescription , eventPlace: event.eventPlace, eventDate: event.eventDate , backgroundColor: AppColors.Blue.opacity(0.7), borderColor: AppColors.White) {
                                     self.active = .event
                                 ScreenNavigation().redirectToScreen(nextView: EventDetailView(event: event, fromScreen: ScreenNames.EventsScreen).environmentObject(sessionService))
                                 }
@@ -232,10 +231,71 @@ struct HomeView: View {
         }.padding(.horizontal, 16)
     }
     private var settingsView: some View {
-        VStack{
-            SecondaryButtonView(title: "fitImage", image: ImageConstants.LogOut, imageColor: AppColors.Purple, background: AppColors.White, foreground: AppColors.Purple, border: AppColors.Purple,height: 80, width: 80, handler: {
-                sessionService.logout()
-            })
+        ZStack {
+            AppColors.Purple.opacity(0.8).ignoresSafeArea(.all, edges: .all)
+            VStack(spacing: 0) {
+                VStack {
+                    HStack {
+//                        Button(action: {
+//                            taskVM.performListOperation(taskVM.selectedParentList!, operationType: .update)
+//                            ScreenNavigation().redirectToScreen(nextView: HomeView(active: .task).environmentObject(sessionService))
+//                        }) {
+//                            CustomImageViewResizable(inputImage: ImageConstants.LeftArrow, color: AppColors.Green).frame(width: 40, height: 40)
+//                        }
+                        Spacer()
+                        Button(action: {
+                            sessionService.logout()
+                        }) {
+                            CustomImageViewResizable(inputImage: ImageConstants.LogOut, color: AppColors.White).frame(width: 40, height: 40).padding()
+                        }
+                        
+//                        .sheet(isPresented: $isAddingChild, content: {
+//                            addNewChildSheet
+//                                .presentationDetents([.medium])
+//                        })
+                    }.padding(16)
+                }
+                ZStack {
+                    Group {
+                        LinearGradient(
+                            colors: [AppColors.White, AppColors.White],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        ).cornerRadius(20).ignoresSafeArea()
+                    }
+                    VStack {
+                        Button(action: {
+                            
+                        }) {
+                            ZStack{
+                                Circle().fill(.white)
+                                CustomImageViewResizable(inputImage: ImageConstants.Profile, color: AppColors.Purple.opacity(0.8))
+                            }
+                            
+                        }.frame(width: 150, height: 150)
+                        
+                        HStack{
+                            CustomLabelString(text: sessionService.userDetails?.firstName.capitalized ?? "", font: .headline.bold(), foregroundColor: AppColors.Black)
+                            CustomLabelString(text: sessionService.userDetails?.lastName.capitalized ?? "", font: .headline.bold(), foregroundColor: AppColors.Black)
+                        }.padding()
+                        CustomLabelString(text: sessionService.userDetails?.occupation ?? "", font: .callout.bold(), foregroundColor: AppColors.Black)
+                        HStack{
+                            Image(systemName: "signpost.right.fill").resizable().foregroundColor(.red).frame(maxWidth: 20, maxHeight: 20)
+                            CustomLabelString(text: "Santo Domingo, RD", font: .caption.bold(), foregroundColor: AppColors.Black)
+                        }.padding()
+                        Divider().padding()
+                        
+                        HStack(spacing: 20) {
+                            SecondaryButtonView(title: "fitImage", image: ImageConstants.Heart, imageColor: AppColors.Red, background: AppColors.White, height: 40, width: 40, handler: {})
+                            SecondaryButtonView(title: "fitImage", image: ImageConstants.History, imageColor: AppColors.Blue, background: AppColors.White, height: 40, width: 40, handler: {})
+                            SecondaryButtonView(title: "fitImage", image: ImageConstants.Crown, imageColor: AppColors.Orange, background: AppColors.White, height: 40, width: 40, handler: {})
+                            SecondaryButtonView(title: "fitImage", image: ImageConstants.Flag, imageColor: AppColors.Green, background: AppColors.White, height: 40, width: 40, handler: {})
+                        }
+                        
+                        Spacer()
+                    }.offset(y: -70).padding(.horizontal, 10)
+                }
+            }
         }
     }
 }
